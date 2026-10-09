@@ -162,4 +162,14 @@ class CinemaTicketsServiceImplTest {
       assertEquals("ticketRequest must not be null", e.getMessage());
     }
   }
+
+  @Test
+  void shouldNotCallDownstreamServices_whenTicketRequestsContainsANullTicketRequest_andExceptionThrown() {
+    try {
+      underTest.purchaseTickets(1L, new TicketRequest[]{null});
+    } catch (InvalidBookingException e) {
+      verifyNoInteractions(paymentService);
+      verifyNoInteractions(seatReservationService);
+    }
+  }
 }
