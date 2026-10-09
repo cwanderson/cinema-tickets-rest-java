@@ -129,4 +129,13 @@ class CinemaTicketsServiceImplTest {
   void shouldThrowInvalidBookingException_whenTicketRequestsIsEmpty() {
     assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L));
   }
+
+  @Test
+  void shouldIncludeDescriptiveMessageInException_whenTicketRequestsIsEmpty() {
+    try {
+      underTest.purchaseTickets(1L);
+    } catch (InvalidBookingException e) {
+      assertEquals("ticketRequests must not be empty", e.getMessage());
+    }
+  }
 }
