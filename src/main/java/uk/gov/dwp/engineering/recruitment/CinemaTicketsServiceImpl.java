@@ -24,7 +24,6 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
   public BookingConfirmation purchaseTickets(final Long accountId,
       final TicketRequest... ticketRequests)
       throws InvalidBookingException {
-
-    throw new InvalidBookingException("Not implemented yet");
+    return null;
   }
 }
