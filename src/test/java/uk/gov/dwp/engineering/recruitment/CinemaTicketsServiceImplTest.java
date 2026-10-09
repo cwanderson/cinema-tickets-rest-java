@@ -70,4 +70,9 @@ class CinemaTicketsServiceImplTest {
       verifyNoInteractions(seatReservationService);
     }
   }
+
+  @Test
+  void shouldThrowInvalidBookingException_whenAccountIdIsANegativeValue() {
+    assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(-1L));
+  }
 }
