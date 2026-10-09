@@ -46,7 +46,7 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
 
   private void validateTicketRequest(TicketRequest ticketRequest) {
     if (ticketRequest == null) {
-      throw new InvalidBookingException("");
+      throw new InvalidBookingException("ticketRequest must not be null");
     }
   }
 }
