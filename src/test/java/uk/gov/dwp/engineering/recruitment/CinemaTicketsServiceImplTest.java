@@ -138,4 +138,14 @@ class CinemaTicketsServiceImplTest {
       assertEquals("ticketRequests must not be empty", e.getMessage());
     }
   }
+
+  @Test
+  void shouldNotCallDownstreamServices_whenTicketRequestsIsEmpty_andExceptionThrown() {
+    try {
+      underTest.purchaseTickets(1L);
+    } catch (InvalidBookingException e) {
+      verifyNoInteractions(paymentService);
+      verifyNoInteractions(seatReservationService);
+    }
+  }
 }
