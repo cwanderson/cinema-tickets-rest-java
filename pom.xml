@@ -292,8 +292,9 @@
         <version>${spotbugs-maven-plugin.version}</version>
         <configuration>
           <effort>max</effort>
-          <htmlOutput>true</htmlOutput>
           <excludeFilterFile>${project.basedir}/.spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+          <htmlOutput>true</htmlOutput>
+          <includeTests>true</includeTests>
           <plugins>
             <plugin>
               <groupId>com.h3xstream.findsecbugs</groupId>
