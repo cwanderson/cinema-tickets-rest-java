@@ -153,4 +153,13 @@ class CinemaTicketsServiceImplTest {
   void shouldThrowInvalidBookingException_whenTicketRequestsContainsANullTicketRequest() {
     assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, new TicketRequest[]{null}));
   }
+
+  @Test
+  void shouldIncludeDescriptiveMessageInException_whenTicketRequestsContainsANullTicketRequest() {
+    try {
+      underTest.purchaseTickets(1L, new TicketRequest[]{null});
+    } catch (InvalidBookingException e) {
+      assertEquals("ticketRequest must not be null", e.getMessage());
+    }
+  }
 }
