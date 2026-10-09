@@ -51,4 +51,13 @@ class CinemaTicketsServiceImplTest {
   void shouldThrowInvalidBookingException_whenAccountIdIsZero() {
     assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(0L));
   }
+
+  @Test
+  void shouldIncludeDescriptiveMessageInException_whenAccountIdIsZero() {
+    try {
+      underTest.purchaseTickets(0L);
+    } catch (InvalidBookingException e) {
+      assertEquals("accountId must be greater than zero", e.getMessage());
+    }
+  }
 }
