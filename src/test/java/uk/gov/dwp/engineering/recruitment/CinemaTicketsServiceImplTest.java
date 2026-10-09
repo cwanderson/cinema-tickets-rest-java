@@ -14,10 +14,10 @@ import static org.mockito.Mockito.verifyNoInteractions;
 
 class CinemaTicketsServiceImplTest {
 
-  public final PaymentService paymentService = mock(PaymentService.class);
-  public final SeatReservationService seatReservationService = mock(SeatReservationService.class);
+  private final PaymentService paymentService = mock(PaymentService.class);
+  private final SeatReservationService seatReservationService = mock(SeatReservationService.class);
 
-  public CinemaTicketsServiceImpl underTest;
+  private CinemaTicketsServiceImpl underTest;
 
   @BeforeEach
   void setup() {
