@@ -2,7 +2,6 @@ package uk.gov.dwp.engineering.recruitment;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import uk.gov.dwp.engineering.recruitment.domain.TicketRequest;
 import uk.gov.dwp.engineering.recruitment.exception.InvalidBookingException;
 import uk.gov.dwp.engineering.recruitment.thirdparty.PaymentService;
 import uk.gov.dwp.engineering.recruitment.thirdparty.SeatReservationService;
@@ -25,7 +24,7 @@ class CinemaTicketsServiceImplTest {
 
   @Test
   void shouldThrowInvalidBookingException_whenAccountIdIsNull() {
-    assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(null, new TicketRequest[]{}));
+    assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(null));
   }
 
   @Test
