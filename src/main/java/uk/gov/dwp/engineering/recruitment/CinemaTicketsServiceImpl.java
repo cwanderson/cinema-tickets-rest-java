@@ -24,6 +24,9 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
   public BookingConfirmation purchaseTickets(final Long accountId,
       final TicketRequest... ticketRequests)
       throws InvalidBookingException {
+    if (accountId == null) {
+      throw new InvalidBookingException("");
+    }
     return null;
   }
 }
