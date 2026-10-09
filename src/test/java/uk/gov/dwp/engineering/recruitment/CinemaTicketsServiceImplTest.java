@@ -101,51 +101,55 @@ class CinemaTicketsServiceImplTest {
     }
   }
 
-  @Test
-  void shouldThrowInvalidBookingException_whenTicketRequestsIsNull() {
-    assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, (TicketRequest[]) null));
-  }
+  @Nested
+  class TicketRequestsValidationTests {
 
-  @Test
-  void shouldIncludeDescriptiveMessageInException_whenTicketRequestsIsNull() {
-    try {
-      underTest.purchaseTickets(1L, (TicketRequest[]) null);
-    } catch (InvalidBookingException e) {
-      assertEquals("ticketRequests must not be null", e.getMessage());
+    @Test
+    void shouldThrowInvalidBookingException_whenTicketRequestsIsNull() {
+      assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, (TicketRequest[]) null));
     }
-  }
 
-  @Test
-  void shouldNotCallDownstreamServices_whenTicketRequestsIsNull_andExceptionThrown() {
-    try {
-      underTest.purchaseTickets(1L, (TicketRequest[]) null);
-    } catch (InvalidBookingException e) {
-      verifyNoInteractions(paymentService);
-      verifyNoInteractions(seatReservationService);
+    @Test
+    void shouldIncludeDescriptiveMessageInException_whenTicketRequestsIsNull() {
+      try {
+        underTest.purchaseTickets(1L, (TicketRequest[]) null);
+      } catch (InvalidBookingException e) {
+        assertEquals("ticketRequests must not be null", e.getMessage());
+      }
     }
-  }
 
-  @Test
-  void shouldThrowInvalidBookingException_whenTicketRequestsIsEmpty() {
-    assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L));
-  }
-
-  @Test
-  void shouldIncludeDescriptiveMessageInException_whenTicketRequestsIsEmpty() {
-    try {
-      underTest.purchaseTickets(1L);
-    } catch (InvalidBookingException e) {
-      assertEquals("ticketRequests must not be empty", e.getMessage());
+    @Test
+    void shouldNotCallDownstreamServices_whenTicketRequestsIsNull_andExceptionThrown() {
+      try {
+        underTest.purchaseTickets(1L, (TicketRequest[]) null);
+      } catch (InvalidBookingException e) {
+        verifyNoInteractions(paymentService);
+        verifyNoInteractions(seatReservationService);
+      }
     }
-  }
 
-  @Test
-  void shouldNotCallDownstreamServices_whenTicketRequestsIsEmpty_andExceptionThrown() {
-    try {
-      underTest.purchaseTickets(1L);
-    } catch (InvalidBookingException e) {
-      verifyNoInteractions(paymentService);
-      verifyNoInteractions(seatReservationService);
+    @Test
+    void shouldThrowInvalidBookingException_whenTicketRequestsIsEmpty() {
+      assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L));
+    }
+
+    @Test
+    void shouldIncludeDescriptiveMessageInException_whenTicketRequestsIsEmpty() {
+      try {
+        underTest.purchaseTickets(1L);
+      } catch (InvalidBookingException e) {
+        assertEquals("ticketRequests must not be empty", e.getMessage());
+      }
+    }
+
+    @Test
+    void shouldNotCallDownstreamServices_whenTicketRequestsIsEmpty_andExceptionThrown() {
+      try {
+        underTest.purchaseTickets(1L);
+      } catch (InvalidBookingException e) {
+        verifyNoInteractions(paymentService);
+        verifyNoInteractions(seatReservationService);
+      }
     }
   }
 
