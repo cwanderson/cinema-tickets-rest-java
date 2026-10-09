@@ -84,4 +84,14 @@ class CinemaTicketsServiceImplTest {
       assertEquals("accountId must be greater than zero", e.getMessage());
     }
   }
+
+  @Test
+  void shouldNotCallDownstreamServices_whenAccountIdIsANegativeValue_andExceptionThrown() {
+    try {
+      underTest.purchaseTickets(-1L);
+    } catch (InvalidBookingException e) {
+      verifyNoInteractions(paymentService);
+      verifyNoInteractions(seatReservationService);
+    }
+  }
 }
