@@ -102,7 +102,7 @@ class CinemaTicketsServiceImplTest {
   }
 
   @Test
-  void shouldThrowInvalidBookingException_whenTicketRequestIsNull() {
+  void shouldThrowInvalidBookingException_whenTicketRequestsIsNull() {
     assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, (TicketRequest[]) null));
   }
 
