@@ -33,7 +33,7 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
       throw new InvalidBookingException("accountId must be greater than zero");
     }
     if (ticketRequests == null) {
-      throw new InvalidBookingException("");
+      throw new InvalidBookingException("ticketRequests must not be null");
     }
     return null;
   }
