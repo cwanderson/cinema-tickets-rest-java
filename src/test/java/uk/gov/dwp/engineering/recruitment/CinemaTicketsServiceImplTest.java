@@ -124,4 +124,9 @@ class CinemaTicketsServiceImplTest {
       verifyNoInteractions(seatReservationService);
     }
   }
+
+  @Test
+  void shouldThrowInvalidBookingException_whenTicketRequestsIsEmpty() {
+    assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L));
+  }
 }
