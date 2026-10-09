@@ -1,6 +1,7 @@
 package uk.gov.dwp.engineering.recruitment;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import uk.gov.dwp.engineering.recruitment.exception.InvalidBookingException;
 import uk.gov.dwp.engineering.recruitment.thirdparty.PaymentService;
@@ -23,75 +24,79 @@ class CinemaTicketsServiceImplTest {
    underTest = new CinemaTicketsServiceImpl(paymentService, seatReservationService);
   }
 
-  @Test
-  void shouldThrowInvalidBookingException_whenAccountIdIsNull() {
-    assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(null));
-  }
+  @Nested
+  class AccountIdValidationTests {
 
-  @Test
-  void shouldIncludeDescriptiveMessageInException_whenAccountIdIsNull() {
-    try {
-      underTest.purchaseTickets(null);
-    } catch (InvalidBookingException e) {
-      assertEquals("accountId must not be null", e.getMessage());
+    @Test
+    void shouldThrowInvalidBookingException_whenAccountIdIsNull() {
+      assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(null));
     }
-  }
 
-  @Test
-  void shouldNotCallDownstreamServices_whenAccountIdIsNull_andExceptionThrown() {
-    try {
-      underTest.purchaseTickets(null);
-    } catch (InvalidBookingException e) {
-      verifyNoInteractions(paymentService);
-      verifyNoInteractions(seatReservationService);
+    @Test
+    void shouldIncludeDescriptiveMessageInException_whenAccountIdIsNull() {
+      try {
+        underTest.purchaseTickets(null);
+      } catch (InvalidBookingException e) {
+        assertEquals("accountId must not be null", e.getMessage());
+      }
     }
-  }
 
-  @Test
-  void shouldThrowInvalidBookingException_whenAccountIdIsZero() {
-    assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(0L));
-  }
-
-  @Test
-  void shouldIncludeDescriptiveMessageInException_whenAccountIdIsZero() {
-    try {
-      underTest.purchaseTickets(0L);
-    } catch (InvalidBookingException e) {
-      assertEquals("accountId must be greater than zero", e.getMessage());
+    @Test
+    void shouldNotCallDownstreamServices_whenAccountIdIsNull_andExceptionThrown() {
+      try {
+        underTest.purchaseTickets(null);
+      } catch (InvalidBookingException e) {
+        verifyNoInteractions(paymentService);
+        verifyNoInteractions(seatReservationService);
+      }
     }
-  }
 
-  @Test
-  void shouldNotCallDownstreamServices_whenAccountIdIsZero_andExceptionThrown() {
-    try {
-      underTest.purchaseTickets(0L);
-    } catch (InvalidBookingException e) {
-      verifyNoInteractions(paymentService);
-      verifyNoInteractions(seatReservationService);
+    @Test
+    void shouldThrowInvalidBookingException_whenAccountIdIsZero() {
+      assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(0L));
     }
-  }
 
-  @Test
-  void shouldThrowInvalidBookingException_whenAccountIdIsANegativeValue() {
-    assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(-1L));
-  }
-
-  @Test
-  void shouldIncludeDescriptiveMessageInException_whenAccountIdIsANegativeValue() {
-    try {
-      underTest.purchaseTickets(-1L);
-    } catch (InvalidBookingException e) {
-      assertEquals("accountId must be greater than zero", e.getMessage());
+    @Test
+    void shouldIncludeDescriptiveMessageInException_whenAccountIdIsZero() {
+      try {
+        underTest.purchaseTickets(0L);
+      } catch (InvalidBookingException e) {
+        assertEquals("accountId must be greater than zero", e.getMessage());
+      }
     }
-  }
 
-  @Test
-  void shouldNotCallDownstreamServices_whenAccountIdIsANegativeValue_andExceptionThrown() {
-    try {
-      underTest.purchaseTickets(-1L);
-    } catch (InvalidBookingException e) {
-      verifyNoInteractions(paymentService);
-      verifyNoInteractions(seatReservationService);
+    @Test
+    void shouldNotCallDownstreamServices_whenAccountIdIsZero_andExceptionThrown() {
+      try {
+        underTest.purchaseTickets(0L);
+      } catch (InvalidBookingException e) {
+        verifyNoInteractions(paymentService);
+        verifyNoInteractions(seatReservationService);
+      }
+    }
+
+    @Test
+    void shouldThrowInvalidBookingException_whenAccountIdIsANegativeValue() {
+      assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(-1L));
+    }
+
+    @Test
+    void shouldIncludeDescriptiveMessageInException_whenAccountIdIsANegativeValue() {
+      try {
+        underTest.purchaseTickets(-1L);
+      } catch (InvalidBookingException e) {
+        assertEquals("accountId must be greater than zero", e.getMessage());
+      }
+    }
+
+    @Test
+    void shouldNotCallDownstreamServices_whenAccountIdIsANegativeValue_andExceptionThrown() {
+      try {
+        underTest.purchaseTickets(-1L);
+      } catch (InvalidBookingException e) {
+        verifyNoInteractions(paymentService);
+        verifyNoInteractions(seatReservationService);
+      }
     }
   }
 }
