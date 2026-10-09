@@ -10,7 +10,7 @@ import uk.gov.dwp.engineering.recruitment.thirdparty.SeatReservationService;
 @Service
 public class CinemaTicketsServiceImpl implements CinemaTicketsService {
 
-  private static final long ACCOUNT_ID_MIN_VALID_VALUE = 1L;
+  private static final long ZERO = 0L;
 
   private final PaymentService paymentService;
 
@@ -29,7 +29,7 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
     if (accountId == null) {
       throw new InvalidBookingException("accountId must not be null");
     }
-    if (accountId < ACCOUNT_ID_MIN_VALID_VALUE) {
+    if (accountId <= ZERO) {
       throw new InvalidBookingException("accountId must be greater than zero");
     }
     return null;
