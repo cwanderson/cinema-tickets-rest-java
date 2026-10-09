@@ -27,7 +27,7 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
     if (accountId == null) {
       throw new InvalidBookingException("accountId must not be null");
     }
-    if (accountId == 0L) {
+    if (accountId < 1L) {
       throw new InvalidBookingException("accountId must be greater than zero");
     }
     return null;
