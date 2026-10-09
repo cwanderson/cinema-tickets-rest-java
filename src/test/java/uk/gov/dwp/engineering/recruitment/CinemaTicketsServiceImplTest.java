@@ -9,6 +9,7 @@ import uk.gov.dwp.engineering.recruitment.thirdparty.SeatReservationService;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 class CinemaTicketsServiceImplTest {
 
@@ -33,6 +34,16 @@ class CinemaTicketsServiceImplTest {
       underTest.purchaseTickets(null);
     } catch (InvalidBookingException e) {
       assertEquals("accountId must not be null", e.getMessage());
+    }
+  }
+
+  @Test
+  void shouldNotCallDownstreamServices_whenAccountIdIsNull_andExceptionThrown() {
+    try {
+      underTest.purchaseTickets(null);
+    } catch (InvalidBookingException e) {
+      verifyNoInteractions(paymentService);
+      verifyNoInteractions(seatReservationService);
     }
   }
 }
