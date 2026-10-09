@@ -3,6 +3,7 @@ package uk.gov.dwp.engineering.recruitment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import uk.gov.dwp.engineering.recruitment.domain.TicketRequest;
 import uk.gov.dwp.engineering.recruitment.exception.InvalidBookingException;
 import uk.gov.dwp.engineering.recruitment.thirdparty.PaymentService;
 import uk.gov.dwp.engineering.recruitment.thirdparty.SeatReservationService;
@@ -98,5 +99,10 @@ class CinemaTicketsServiceImplTest {
         verifyNoInteractions(seatReservationService);
       }
     }
+  }
+
+  @Test
+  void shouldThrowInvalidBookingException_whenTicketRequestIsNull() {
+    assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, (TicketRequest[]) null));
   }
 }
