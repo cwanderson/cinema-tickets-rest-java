@@ -210,4 +210,14 @@ class CinemaTicketsServiceImplTest {
     var ticketRequest = new TicketRequest(TicketType.ADULT, -1);
     assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, ticketRequest));
   }
+
+  @Test
+  void shouldIncludeDescriptiveMessageInException_whenTicketCountInTicketRequestIsLessThaZero() {
+    var ticketRequest = new TicketRequest(TicketType.ADULT, -1);
+    try {
+      underTest.purchaseTickets(1L, ticketRequest);
+    } catch (InvalidBookingException e) {
+      assertEquals("ticketCount must not be less than zero", e.getMessage());
+    }
+  }
 }
