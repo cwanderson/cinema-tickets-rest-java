@@ -23,7 +23,7 @@ class CinemaTicketsServiceImplTest {
 
   @BeforeEach
   void setup() {
-   underTest = new CinemaTicketsServiceImpl(paymentService, seatReservationService);
+    underTest = new CinemaTicketsServiceImpl(paymentService, seatReservationService);
   }
 
   @Nested
@@ -152,83 +152,87 @@ class CinemaTicketsServiceImplTest {
         verifyNoInteractions(seatReservationService);
       }
     }
-  }
+    
+    @Test
+    void shouldThrowInvalidBookingException_whenTicketRequestsContainsANullTicketRequest() {
+      assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, new TicketRequest[]{null}));
+    }
 
-  @Test
-  void shouldThrowInvalidBookingException_whenTicketRequestsContainsANullTicketRequest() {
-    assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, new TicketRequest[]{null}));
-  }
+    @Test
+    void shouldIncludeDescriptiveMessageInException_whenTicketRequestsContainsANullTicketRequest() {
+      try {
+        underTest.purchaseTickets(1L, new TicketRequest[]{null});
+      } catch (InvalidBookingException e) {
+        assertEquals("ticketRequest must not be null", e.getMessage());
+      }
+    }
 
-  @Test
-  void shouldIncludeDescriptiveMessageInException_whenTicketRequestsContainsANullTicketRequest() {
-    try {
-      underTest.purchaseTickets(1L, new TicketRequest[]{null});
-    } catch (InvalidBookingException e) {
-      assertEquals("ticketRequest must not be null", e.getMessage());
+    @Test
+    void shouldNotCallDownstreamServices_whenTicketRequestsContainsANullTicketRequest_andExceptionThrown() {
+      try {
+        underTest.purchaseTickets(1L, new TicketRequest[]{null});
+      } catch (InvalidBookingException e) {
+        verifyNoInteractions(paymentService);
+        verifyNoInteractions(seatReservationService);
+      }
     }
   }
 
-  @Test
-  void shouldNotCallDownstreamServices_whenTicketRequestsContainsANullTicketRequest_andExceptionThrown() {
-    try {
-      underTest.purchaseTickets(1L, new TicketRequest[]{null});
-    } catch (InvalidBookingException e) {
-      verifyNoInteractions(paymentService);
-      verifyNoInteractions(seatReservationService);
+  @Nested
+  class TicketRequestValidationTests {
+
+    @Test
+    void shouldThrowInvalidBookingException_whenTicketTypeInTicketRequestIsNull() {
+      var ticketRequest = new TicketRequest(null, 0);
+      assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, ticketRequest));
     }
-  }
 
-  @Test
-  void shouldThrowInvalidBookingException_whenTicketTypeInTicketRequestIsNull() {
-    var ticketRequest = new TicketRequest(null, 0);
-    assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, ticketRequest));
-  }
-
-  @Test
-  void shouldIncludeDescriptiveMessageInException_whenTicketTypeInTicketRequestIsNull() {
-    var ticketRequest = new TicketRequest(null, 0);
-    try {
-      underTest.purchaseTickets(1L, ticketRequest);
-    } catch (InvalidBookingException e) {
-      assertEquals("ticketType must not be null", e.getMessage());
+    @Test
+    void shouldIncludeDescriptiveMessageInException_whenTicketTypeInTicketRequestIsNull() {
+      var ticketRequest = new TicketRequest(null, 0);
+      try {
+        underTest.purchaseTickets(1L, ticketRequest);
+      } catch (InvalidBookingException e) {
+        assertEquals("ticketType must not be null", e.getMessage());
+      }
     }
-  }
 
-  @Test
-  void shouldNotCallDownstreamServices_whenTicketTypeInTicketRequestIsNull_andExceptionThrown() {
-    var ticketRequest = new TicketRequest(null, 0);
-    try {
-      underTest.purchaseTickets(1L, ticketRequest);
-    } catch (InvalidBookingException e) {
-      verifyNoInteractions(paymentService);
-      verifyNoInteractions(seatReservationService);
+    @Test
+    void shouldNotCallDownstreamServices_whenTicketTypeInTicketRequestIsNull_andExceptionThrown() {
+      var ticketRequest = new TicketRequest(null, 0);
+      try {
+        underTest.purchaseTickets(1L, ticketRequest);
+      } catch (InvalidBookingException e) {
+        verifyNoInteractions(paymentService);
+        verifyNoInteractions(seatReservationService);
+      }
     }
-  }
 
-  @Test
-  void shouldThrowInvalidBookingException_whenTicketCountInTicketRequestIsLessThaZero() {
-    var ticketRequest = new TicketRequest(TicketType.ADULT, -1);
-    assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, ticketRequest));
-  }
-
-  @Test
-  void shouldIncludeDescriptiveMessageInException_whenTicketCountInTicketRequestIsLessThaZero() {
-    var ticketRequest = new TicketRequest(TicketType.ADULT, -1);
-    try {
-      underTest.purchaseTickets(1L, ticketRequest);
-    } catch (InvalidBookingException e) {
-      assertEquals("ticketCount must not be less than zero", e.getMessage());
+    @Test
+    void shouldThrowInvalidBookingException_whenTicketCountInTicketRequestIsLessThaZero() {
+      var ticketRequest = new TicketRequest(TicketType.ADULT, -1);
+      assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, ticketRequest));
     }
-  }
 
-  @Test
-  void shouldNotCallDownstreamServices_whenTicketCountInTicketRequestIsLessThaZero_andExceptionThrown() {
-    var ticketRequest = new TicketRequest(TicketType.ADULT, -1);
-    try {
-      underTest.purchaseTickets(1L, ticketRequest);
-    } catch (InvalidBookingException e) {
-      verifyNoInteractions(paymentService);
-      verifyNoInteractions(seatReservationService);
+    @Test
+    void shouldIncludeDescriptiveMessageInException_whenTicketCountInTicketRequestIsLessThaZero() {
+      var ticketRequest = new TicketRequest(TicketType.ADULT, -1);
+      try {
+        underTest.purchaseTickets(1L, ticketRequest);
+      } catch (InvalidBookingException e) {
+        assertEquals("ticketCount must not be less than zero", e.getMessage());
+      }
+    }
+
+    @Test
+    void shouldNotCallDownstreamServices_whenTicketCountInTicketRequestIsLessThaZero_andExceptionThrown() {
+      var ticketRequest = new TicketRequest(TicketType.ADULT, -1);
+      try {
+        underTest.purchaseTickets(1L, ticketRequest);
+      } catch (InvalidBookingException e) {
+        verifyNoInteractions(paymentService);
+        verifyNoInteractions(seatReservationService);
+      }
     }
   }
 }
