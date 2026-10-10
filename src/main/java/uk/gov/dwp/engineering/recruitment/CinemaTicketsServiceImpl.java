@@ -56,6 +56,7 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
     }
     int totalTicketCount = 0;
     int adultTicketCount = 0;
+    int infantTicketCount = 0;
     for (var ticketRequest : ticketRequests) {
       validateTicketRequest(ticketRequest);
 
@@ -65,10 +66,15 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
       }
       if (ticketRequest.type() == TicketType.ADULT) {
         adultTicketCount += ticketRequest.ticketCount();
+      } else if (ticketRequest.type() == TicketType.INFANT) {
+        infantTicketCount += ticketRequest.ticketCount();
       }
     }
     if (adultTicketCount <= 0) {
       throw new InvalidBookingException(ADULT_TICKET_COUNT_IS_ZERO);
+    }
+    if (infantTicketCount > adultTicketCount) {
+      throw new InvalidBookingException("");
     }
     return null;
   }
