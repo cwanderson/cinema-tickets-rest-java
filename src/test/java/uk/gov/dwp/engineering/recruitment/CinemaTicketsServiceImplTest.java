@@ -328,4 +328,15 @@ class CinemaTicketsServiceImplTest {
     var infantTicketRequest = new TicketRequest(TicketType.INFANT, 2);
     assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, infantTicketRequest, adultTicketRequest));
   }
+
+  @Test
+  void shouldIncludeDescriptiveMessageInException_whenInfantTicketsExceedsAdultTicketsRequested() {
+    var adultTicketRequest = new TicketRequest(TicketType.ADULT, 1);
+    var infantTicketRequest = new TicketRequest(TicketType.INFANT, 2);
+    try {
+      underTest.purchaseTickets(1L, infantTicketRequest, adultTicketRequest);
+    } catch (InvalidBookingException e) {
+      assertEquals("infant ticket count must not exceed adult ticket count", e.getMessage());
+    }
+  }
 }
