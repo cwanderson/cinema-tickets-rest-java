@@ -305,4 +305,15 @@ class CinemaTicketsServiceImplTest {
       assertEquals("adult ticketCount must be greater than zero", e.getMessage());
     }
   }
+
+  @Test
+  void shouldNotCallDownstreamServices_whenOnlyAChildTicketIsRequested_andExceptionThrown() {
+    var ticketRequest = new TicketRequest(TicketType.CHILD, 1);
+    try {
+      underTest.purchaseTickets(1L, ticketRequest);
+    } catch (InvalidBookingException e) {
+      verifyNoInteractions(paymentService);
+      verifyNoInteractions(seatReservationService);
+    }
+  }
 }
