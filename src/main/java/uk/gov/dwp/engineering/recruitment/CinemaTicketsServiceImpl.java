@@ -45,7 +45,8 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
 
       totalTicketCount += ticketRequest.ticketCount();
       if (totalTicketCount > MAX_TICKET_COUNT) {
-        throw new InvalidBookingException("");
+        throw new InvalidBookingException(
+                "total ticketCount must not be greater than " + MAX_TICKET_COUNT);
       }
     }
     return null;
