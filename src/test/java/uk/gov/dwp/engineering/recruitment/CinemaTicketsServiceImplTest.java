@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import uk.gov.dwp.engineering.recruitment.domain.TicketRequest;
+import uk.gov.dwp.engineering.recruitment.domain.TicketType;
 import uk.gov.dwp.engineering.recruitment.exception.InvalidBookingException;
 import uk.gov.dwp.engineering.recruitment.thirdparty.PaymentService;
 import uk.gov.dwp.engineering.recruitment.thirdparty.SeatReservationService;
@@ -202,5 +203,11 @@ class CinemaTicketsServiceImplTest {
       verifyNoInteractions(paymentService);
       verifyNoInteractions(seatReservationService);
     }
+  }
+
+  @Test
+  void shouldThrowInvalidBookingException_whenTicketCountInTicketRequestIsLessThaZero() {
+    var ticketRequest = new TicketRequest(TicketType.ADULT, -1);
+    assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, ticketRequest));
   }
 }
