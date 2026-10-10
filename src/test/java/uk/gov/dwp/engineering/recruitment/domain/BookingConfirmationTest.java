@@ -28,4 +28,11 @@ class BookingConfirmationTest {
 
     assertEquals(1L, underTest.seatCount());
   }
+
+  @Test
+  void shouldReturnNullTotalCost_whenBookingConfirmationUsesDeprecatedConstructor() {
+    underTest = new BookingConfirmation(99L);
+
+    assertNull(underTest.totalCost());
+  }
 }
