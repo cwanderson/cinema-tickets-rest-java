@@ -182,4 +182,14 @@ class CinemaTicketsServiceImplTest {
     var ticketRequest = new TicketRequest(null, 0);
     assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, ticketRequest));
   }
+
+  @Test
+  void shouldIncludeDescriptiveMessageInException_whenTicketTypeInTicketRequestIsNull() {
+    var ticketRequest = new TicketRequest(null, 0);
+    try {
+      underTest.purchaseTickets(1L, ticketRequest);
+    } catch (InvalidBookingException e) {
+      assertEquals("ticketType must not be null", e.getMessage());
+    }
+  }
 }
