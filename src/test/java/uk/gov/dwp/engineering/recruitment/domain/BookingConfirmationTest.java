@@ -21,4 +21,11 @@ class BookingConfirmationTest {
 
     assertNull(underTest.seatCount());
   }
+
+  @Test
+  void shouldReturnValueForSeatCount_whenSeatCountSetInConstructor() {
+    underTest = new BookingConfirmation(99L, 1L);
+
+    assertEquals(1L, underTest.seatCount());
+  }
 }
