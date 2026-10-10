@@ -61,6 +61,9 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
             .multiply(new BigDecimal(ticketCountsByType.get(TicketType.CHILD))));
     paymentService.debitAccount(accountId, paymentAmount);
 
+    var seatCount = ticketCountsByType.get(TicketType.ADULT).longValue();
+    seatReservationService.reserveSeats(accountId, seatCount);
+
     return null;
   }
 
