@@ -52,7 +52,7 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
       throw new InvalidBookingException("ticketType must not be null");
     }
     if (ticketRequest.ticketCount() < ZERO) {
-      throw new InvalidBookingException("");
+      throw new InvalidBookingException("ticketCount must not be less than zero");
     }
   }
 }
