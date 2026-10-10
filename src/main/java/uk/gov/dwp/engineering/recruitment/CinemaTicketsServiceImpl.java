@@ -65,7 +65,7 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
     seatCount += ticketCountsByType.get(TicketType.CHILD).longValue();
     seatReservationService.reserveSeats(accountId, seatCount);
 
-    return null;
+    return new BookingConfirmation(accountId, seatCount, paymentAmount);
   }
 
   private void validateAccountId(Long accountId) {
