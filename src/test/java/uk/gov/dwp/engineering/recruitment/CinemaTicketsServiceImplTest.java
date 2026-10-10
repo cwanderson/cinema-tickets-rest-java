@@ -265,90 +265,94 @@ class CinemaTicketsServiceImplTest {
     }
   }
 
-  @Test
-  void shouldThrowInvalidBookingException_whenTotalTicketCountRequestedIsGreaterThanTwentyFive() {
-    var ticketRequest = new TicketRequest(TicketType.ADULT, 13);
-    assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, ticketRequest, ticketRequest));
-  }
+  @Nested
+  class TicketCountValidationTests {
 
-  @Test
-  void shouldIncludeDescriptiveMessageInException_whenTotalTicketCountRequestedIsGreaterThanTwentyFive() {
-    var ticketRequest = new TicketRequest(TicketType.ADULT, 13);
-    try {
-      underTest.purchaseTickets(1L, ticketRequest, ticketRequest);
-    } catch (InvalidBookingException e) {
-      assertEquals("total ticketCount must not be greater than 25", e.getMessage());
+    @Test
+    void shouldThrowInvalidBookingException_whenTotalTicketCountRequestedIsGreaterThanTwentyFive() {
+      var ticketRequest = new TicketRequest(TicketType.ADULT, 13);
+      assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, ticketRequest, ticketRequest));
     }
-  }
 
-  @Test
-  void shouldNotCallDownstreamServices_whenTotalTicketCountRequestedIsGreaterThanTwentyFive_andExceptionThrown() {
-    var ticketRequest = new TicketRequest(TicketType.ADULT, 13);
-    try {
-      underTest.purchaseTickets(1L, ticketRequest, ticketRequest);
-    } catch (InvalidBookingException e) {
-      verifyNoInteractions(paymentService);
-      verifyNoInteractions(seatReservationService);
+    @Test
+    void shouldIncludeDescriptiveMessageInException_whenTotalTicketCountRequestedIsGreaterThanTwentyFive() {
+      var ticketRequest = new TicketRequest(TicketType.ADULT, 13);
+      try {
+        underTest.purchaseTickets(1L, ticketRequest, ticketRequest);
+      } catch (InvalidBookingException e) {
+        assertEquals("total ticketCount must not be greater than 25", e.getMessage());
+      }
     }
-  }
 
-  @ParameterizedTest
-  @EnumSource(names = {"CHILD", "INFANT"})
-  void shouldThrowInvalidBookingException_whenNoAdultTicketIsRequested(TicketType ticketType) {
-    var ticketRequest = new TicketRequest(ticketType, 1);
-    assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, ticketRequest));
-  }
-
-  @ParameterizedTest
-  @EnumSource(names = {"CHILD", "INFANT"})
-  void shouldIncludeDescriptiveMessageInException_whenNoAdultTicketIsRequested(TicketType ticketType) {
-    var ticketRequest = new TicketRequest(ticketType, 1);
-    try {
-      underTest.purchaseTickets(1L, ticketRequest);
-    } catch (InvalidBookingException e) {
-      assertEquals("adult ticketCount must be greater than zero", e.getMessage());
+    @Test
+    void shouldNotCallDownstreamServices_whenTotalTicketCountRequestedIsGreaterThanTwentyFive_andExceptionThrown() {
+      var ticketRequest = new TicketRequest(TicketType.ADULT, 13);
+      try {
+        underTest.purchaseTickets(1L, ticketRequest, ticketRequest);
+      } catch (InvalidBookingException e) {
+        verifyNoInteractions(paymentService);
+        verifyNoInteractions(seatReservationService);
+      }
     }
-  }
 
-  @ParameterizedTest
-  @EnumSource(names = {"CHILD", "INFANT"})
-  void shouldNotCallDownstreamServices_whenNoAdultTicketIsRequested_andExceptionThrown(TicketType ticketType) {
-    var ticketRequest = new TicketRequest(ticketType, 1);
-    try {
-      underTest.purchaseTickets(1L, ticketRequest);
-    } catch (InvalidBookingException e) {
-      verifyNoInteractions(paymentService);
-      verifyNoInteractions(seatReservationService);
+    @ParameterizedTest
+    @EnumSource(names = {"CHILD", "INFANT"})
+    void shouldThrowInvalidBookingException_whenNoAdultTicketIsRequested(TicketType ticketType) {
+      var ticketRequest = new TicketRequest(ticketType, 1);
+      assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, ticketRequest));
     }
-  }
 
-  @Test
-  void shouldThrowInvalidBookingException_whenInfantTicketsExceedsAdultTicketsRequested() {
-    var adultTicketRequest = new TicketRequest(TicketType.ADULT, 1);
-    var infantTicketRequest = new TicketRequest(TicketType.INFANT, 2);
-    assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, infantTicketRequest, adultTicketRequest));
-  }
-
-  @Test
-  void shouldIncludeDescriptiveMessageInException_whenInfantTicketsExceedsAdultTicketsRequested() {
-    var adultTicketRequest = new TicketRequest(TicketType.ADULT, 1);
-    var infantTicketRequest = new TicketRequest(TicketType.INFANT, 2);
-    try {
-      underTest.purchaseTickets(1L, infantTicketRequest, adultTicketRequest);
-    } catch (InvalidBookingException e) {
-      assertEquals("infant ticket count must not exceed adult ticket count", e.getMessage());
+    @ParameterizedTest
+    @EnumSource(names = {"CHILD", "INFANT"})
+    void shouldIncludeDescriptiveMessageInException_whenNoAdultTicketIsRequested(TicketType ticketType) {
+      var ticketRequest = new TicketRequest(ticketType, 1);
+      try {
+        underTest.purchaseTickets(1L, ticketRequest);
+      } catch (InvalidBookingException e) {
+        assertEquals("adult ticketCount must be greater than zero", e.getMessage());
+      }
     }
-  }
 
-  @Test
-  void shouldNotCallDownstreamServices_whenInfantTicketsExceedsAdultTicketsRequested_andExceptionThrown() {
-    var adultTicketRequest = new TicketRequest(TicketType.ADULT, 1);
-    var infantTicketRequest = new TicketRequest(TicketType.INFANT, 2);
-    try {
-      underTest.purchaseTickets(1L, infantTicketRequest, adultTicketRequest);
-    } catch (InvalidBookingException e) {
-      verifyNoInteractions(paymentService);
-      verifyNoInteractions(seatReservationService);
+    @ParameterizedTest
+    @EnumSource(names = {"CHILD", "INFANT"})
+    void shouldNotCallDownstreamServices_whenNoAdultTicketIsRequested_andExceptionThrown(TicketType ticketType) {
+      var ticketRequest = new TicketRequest(ticketType, 1);
+      try {
+        underTest.purchaseTickets(1L, ticketRequest);
+      } catch (InvalidBookingException e) {
+        verifyNoInteractions(paymentService);
+        verifyNoInteractions(seatReservationService);
+      }
+    }
+
+    @Test
+    void shouldThrowInvalidBookingException_whenInfantTicketsExceedsAdultTicketsRequested() {
+      var adultTicketRequest = new TicketRequest(TicketType.ADULT, 1);
+      var infantTicketRequest = new TicketRequest(TicketType.INFANT, 2);
+      assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, infantTicketRequest, adultTicketRequest));
+    }
+
+    @Test
+    void shouldIncludeDescriptiveMessageInException_whenInfantTicketsExceedsAdultTicketsRequested() {
+      var adultTicketRequest = new TicketRequest(TicketType.ADULT, 1);
+      var infantTicketRequest = new TicketRequest(TicketType.INFANT, 2);
+      try {
+        underTest.purchaseTickets(1L, infantTicketRequest, adultTicketRequest);
+      } catch (InvalidBookingException e) {
+        assertEquals("infant ticket count must not exceed adult ticket count", e.getMessage());
+      }
+    }
+
+    @Test
+    void shouldNotCallDownstreamServices_whenInfantTicketsExceedsAdultTicketsRequested_andExceptionThrown() {
+      var adultTicketRequest = new TicketRequest(TicketType.ADULT, 1);
+      var infantTicketRequest = new TicketRequest(TicketType.INFANT, 2);
+      try {
+        underTest.purchaseTickets(1L, infantTicketRequest, adultTicketRequest);
+      } catch (InvalidBookingException e) {
+        verifyNoInteractions(paymentService);
+        verifyNoInteractions(seatReservationService);
+      }
     }
   }
 }
