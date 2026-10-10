@@ -3,8 +3,10 @@ package uk.gov.dwp.engineering.recruitment.thirdparty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import uk.gov.dwp.engineering.recruitment.domain.TicketType;
 import uk.gov.dwp.engineering.recruitment.exception.InvalidPriceException;
 
 class TicketPriceServiceImplTest {
@@ -28,5 +30,12 @@ class TicketPriceServiceImplTest {
     } catch (InvalidPriceException e) {
       assertEquals("ticket type must not be null", e.getMessage());
     }
+  }
+
+  @Test
+  void shouldReturnCorrectPrice_whenPriceForAdultTicketTypeRequested() {
+    var actual = underTest.getPrice(TicketType.ADULT);
+
+    assertEquals(new BigDecimal("25.99"), actual);
   }
 }
