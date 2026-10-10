@@ -268,4 +268,14 @@ class CinemaTicketsServiceImplTest {
     var ticketRequest = new TicketRequest(TicketType.ADULT, 13);
     assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, ticketRequest, ticketRequest));
   }
+
+  @Test
+  void shouldIncludeDescriptiveMessageInException_whenTotalTicketCountRequestedIsGreaterThanTwentyFive() {
+    var ticketRequest = new TicketRequest(TicketType.ADULT, 13);
+    try {
+      underTest.purchaseTickets(1L, ticketRequest, ticketRequest);
+    } catch (InvalidBookingException e) {
+      assertEquals("total ticketCount must not be greater than 25", e.getMessage());
+    }
+  }
 }
