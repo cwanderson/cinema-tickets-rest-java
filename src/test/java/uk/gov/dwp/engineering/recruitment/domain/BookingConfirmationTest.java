@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+
 class BookingConfirmationTest {
 
   private BookingConfirmation underTest;
@@ -34,5 +36,12 @@ class BookingConfirmationTest {
     underTest = new BookingConfirmation(99L);
 
     assertNull(underTest.totalCost());
+  }
+
+  @Test
+  void shouldReturnValueForTotalCost_whenTotalCostSetInConstructor() {
+    underTest = new BookingConfirmation(99L, 1L, new BigDecimal("25.99"));
+
+    assertEquals(new BigDecimal("25.99"), underTest.totalCost());
   }
 }
