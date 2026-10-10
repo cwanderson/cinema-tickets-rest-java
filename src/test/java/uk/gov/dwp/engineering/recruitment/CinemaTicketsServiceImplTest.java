@@ -235,4 +235,10 @@ class CinemaTicketsServiceImplTest {
       }
     }
   }
+
+  @Test
+  void shouldThrowInvalidBookingException_whenTicketCountInTicketRequestIsGreaterThanTwentyFive() {
+    var ticketRequest = new TicketRequest(TicketType.ADULT, 26);
+    assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, ticketRequest));
+  }
 }
