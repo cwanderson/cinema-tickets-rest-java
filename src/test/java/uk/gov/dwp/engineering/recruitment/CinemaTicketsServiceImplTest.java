@@ -262,4 +262,10 @@ class CinemaTicketsServiceImplTest {
       verifyNoInteractions(seatReservationService);
     }
   }
+
+  @Test
+  void shouldThrowInvalidBookingException_whenTotalTicketCountRequestedIsGreaterThanTwentyFive() {
+    var ticketRequest = new TicketRequest(TicketType.ADULT, 13);
+    assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, ticketRequest, ticketRequest));
+  }
 }
