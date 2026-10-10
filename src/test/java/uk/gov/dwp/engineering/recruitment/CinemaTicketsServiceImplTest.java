@@ -220,4 +220,15 @@ class CinemaTicketsServiceImplTest {
       assertEquals("ticketCount must not be less than zero", e.getMessage());
     }
   }
+
+  @Test
+  void shouldNotCallDownstreamServices_whenTicketCountInTicketRequestIsLessThaZero_andExceptionThrown() {
+    var ticketRequest = new TicketRequest(TicketType.ADULT, -1);
+    try {
+      underTest.purchaseTickets(1L, ticketRequest);
+    } catch (InvalidBookingException e) {
+      verifyNoInteractions(paymentService);
+      verifyNoInteractions(seatReservationService);
+    }
+  }
 }
