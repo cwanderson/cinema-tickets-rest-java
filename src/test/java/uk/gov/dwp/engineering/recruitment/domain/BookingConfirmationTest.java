@@ -24,7 +24,7 @@ class BookingConfirmationTest {
 
   @Test
   void shouldReturnValueForSeatCount_whenSeatCountSetInConstructor() {
-    underTest = new BookingConfirmation(99L, 1L);
+    underTest = new BookingConfirmation(99L, 1L, null);
 
     assertEquals(1L, underTest.seatCount());
   }
