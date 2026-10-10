@@ -407,4 +407,15 @@ class CinemaTicketsServiceImplTest {
 
     verify(seatReservationService).reserveSeats(1L, 2L);
   }
+
+  @Test
+  void shouldCallSeatReservationServiceWithAccountIdAndCorrectSeatCount_whenEightOfEachTypeOfTicketIsRequested() {
+    var adultTicketRequest = new TicketRequest(TicketType.ADULT, 8);
+    var childTicketRequest = new TicketRequest(TicketType.CHILD, 8);
+    var infantTicketRequest = new TicketRequest(TicketType.INFANT, 8);
+
+    underTest.purchaseTickets(1L, adultTicketRequest, childTicketRequest, infantTicketRequest);
+
+    verify(seatReservationService).reserveSeats(1L, 16L);
+  }
 }
