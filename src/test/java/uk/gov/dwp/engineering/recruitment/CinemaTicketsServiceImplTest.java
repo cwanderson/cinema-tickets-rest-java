@@ -3,8 +3,10 @@ package uk.gov.dwp.engineering.recruitment;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 
+import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -354,5 +356,14 @@ class CinemaTicketsServiceImplTest {
         verifyNoInteractions(seatReservationService);
       }
     }
+  }
+
+  @Test
+  void shouldCallPaymentServiceWithAccountIdAndCorrectAmount_whenOneAdultTicketIsRequested() {
+    var adultTicketRequest = new TicketRequest(TicketType.ADULT, 1);
+
+    underTest.purchaseTickets(1L, adultTicketRequest);
+
+    verify(paymentService).debitAccount(1L, new BigDecimal("25.99"));
   }
 }
