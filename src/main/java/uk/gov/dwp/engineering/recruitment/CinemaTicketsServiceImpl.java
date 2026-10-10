@@ -27,6 +27,8 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
           "ticketCount must not be less than zero";
   private static final String ADULT_TICKET_COUNT_IS_ZERO =
           "adult ticketCount must be greater than zero";
+  private static final String INFANT_TICKET_COUNT_EXCEEDS_ADULT_TICKET_COUNT =
+          "infant ticket count must not exceed adult ticket count";
 
   private final PaymentService paymentService;
 
@@ -74,7 +76,7 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
       throw new InvalidBookingException(ADULT_TICKET_COUNT_IS_ZERO);
     }
     if (infantTicketCount > adultTicketCount) {
-      throw new InvalidBookingException("");
+      throw new InvalidBookingException(INFANT_TICKET_COUNT_EXCEEDS_ADULT_TICKET_COUNT);
     }
     return null;
   }
