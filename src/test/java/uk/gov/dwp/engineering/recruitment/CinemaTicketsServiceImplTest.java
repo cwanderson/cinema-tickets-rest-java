@@ -339,4 +339,16 @@ class CinemaTicketsServiceImplTest {
       assertEquals("infant ticket count must not exceed adult ticket count", e.getMessage());
     }
   }
+
+  @Test
+  void shouldNotCallDownstreamServices_whenInfantTicketsExceedsAdultTicketsRequested_andExceptionThrown() {
+    var adultTicketRequest = new TicketRequest(TicketType.ADULT, 1);
+    var infantTicketRequest = new TicketRequest(TicketType.INFANT, 2);
+    try {
+      underTest.purchaseTickets(1L, infantTicketRequest, adultTicketRequest);
+    } catch (InvalidBookingException e) {
+      verifyNoInteractions(paymentService);
+      verifyNoInteractions(seatReservationService);
+    }
+  }
 }
