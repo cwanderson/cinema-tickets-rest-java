@@ -66,7 +66,7 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
       }
     }
     if (adultTicketCount <= 0) {
-      throw new InvalidBookingException("");
+      throw new InvalidBookingException("adult ticketCount must be greater than zero");
     }
     return null;
   }
