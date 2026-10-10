@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import uk.gov.dwp.engineering.recruitment.domain.BookingConfirmation;
 import uk.gov.dwp.engineering.recruitment.domain.TicketRequest;
 import uk.gov.dwp.engineering.recruitment.domain.TicketType;
 import uk.gov.dwp.engineering.recruitment.exception.InvalidBookingException;
@@ -417,5 +418,15 @@ class CinemaTicketsServiceImplTest {
     underTest.purchaseTickets(1L, adultTicketRequest, childTicketRequest, infantTicketRequest);
 
     verify(seatReservationService).reserveSeats(1L, 16L);
+  }
+
+  @Test
+  void shouldReturnABookingConfirmationWithAccountIdSeatCountAndTotalCost_whenOneAdultTicketIsRequested() {
+    var adultTicketRequest = new TicketRequest(TicketType.ADULT, 1);
+    var expected = new BookingConfirmation(1L, 1L, new BigDecimal("25.99"));
+
+    var actual = underTest.purchaseTickets(1L, adultTicketRequest);
+
+    assertEquals(expected, actual);
   }
 }
