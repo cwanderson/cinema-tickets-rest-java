@@ -176,4 +176,10 @@ class CinemaTicketsServiceImplTest {
       verifyNoInteractions(seatReservationService);
     }
   }
+
+  @Test
+  void shouldThrowInvalidBookingException_whenTicketTypeInTicketRequestIsNull() {
+    var ticketRequest = new TicketRequest(null, 0);
+    assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, ticketRequest));
+  }
 }
