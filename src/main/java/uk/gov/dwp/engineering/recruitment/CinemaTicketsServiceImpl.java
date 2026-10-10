@@ -57,6 +57,8 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
 
     var paymentAmount = new BigDecimal("25.99")
             .multiply(new BigDecimal(ticketCountsByType.get(TicketType.ADULT)));
+    paymentAmount = paymentAmount.add(new BigDecimal("17.50")
+            .multiply(new BigDecimal(ticketCountsByType.get(TicketType.CHILD))));
     paymentService.debitAccount(accountId, paymentAmount);
 
     return null;
