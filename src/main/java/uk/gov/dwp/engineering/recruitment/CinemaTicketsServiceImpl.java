@@ -3,6 +3,7 @@ package uk.gov.dwp.engineering.recruitment;
 import org.springframework.stereotype.Service;
 import uk.gov.dwp.engineering.recruitment.domain.BookingConfirmation;
 import uk.gov.dwp.engineering.recruitment.domain.TicketRequest;
+import uk.gov.dwp.engineering.recruitment.domain.TicketType;
 import uk.gov.dwp.engineering.recruitment.exception.InvalidBookingException;
 import uk.gov.dwp.engineering.recruitment.thirdparty.PaymentService;
 import uk.gov.dwp.engineering.recruitment.thirdparty.SeatReservationService;
@@ -52,6 +53,7 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
       throw new InvalidBookingException(TICKET_REQUESTS_IS_EMPTY);
     }
     int totalTicketCount = 0;
+    int adultTicketCount = 0;
     for (var ticketRequest : ticketRequests) {
       validateTicketRequest(ticketRequest);
 
@@ -59,6 +61,12 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
       if (totalTicketCount > MAX_TICKET_COUNT) {
         throw new InvalidBookingException(MAX_TOTAL_TICKET_COUNT_EXCEEDED);
       }
+      if (ticketRequest.type() == TicketType.ADULT) {
+        adultTicketCount += ticketRequest.ticketCount();
+      }
+    }
+    if (adultTicketCount <= 0) {
+      throw new InvalidBookingException("");
     }
     return null;
   }
