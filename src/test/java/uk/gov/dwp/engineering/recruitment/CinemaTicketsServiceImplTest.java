@@ -8,6 +8,8 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import uk.gov.dwp.engineering.recruitment.domain.TicketRequest;
 import uk.gov.dwp.engineering.recruitment.domain.TicketType;
 import uk.gov.dwp.engineering.recruitment.exception.InvalidBookingException;
@@ -290,15 +292,17 @@ class CinemaTicketsServiceImplTest {
     }
   }
 
-  @Test
-  void shouldThrowInvalidBookingException_whenOnlyAChildTicketIsRequested() {
-    var ticketRequest = new TicketRequest(TicketType.CHILD, 1);
+  @ParameterizedTest
+  @EnumSource(names = {"CHILD", "INFANT"})
+  void shouldThrowInvalidBookingException_whenNoAdultTicketIsRequested(TicketType ticketType) {
+    var ticketRequest = new TicketRequest(ticketType, 1);
     assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, ticketRequest));
   }
 
-  @Test
-  void shouldIncludeDescriptiveMessageInException_whenOnlyAChildTicketIsRequested() {
-    var ticketRequest = new TicketRequest(TicketType.CHILD, 1);
+  @ParameterizedTest
+  @EnumSource(names = {"CHILD", "INFANT"})
+  void shouldIncludeDescriptiveMessageInException_whenNoAdultTicketIsRequested(TicketType ticketType) {
+    var ticketRequest = new TicketRequest(ticketType, 1);
     try {
       underTest.purchaseTickets(1L, ticketRequest);
     } catch (InvalidBookingException e) {
@@ -306,9 +310,10 @@ class CinemaTicketsServiceImplTest {
     }
   }
 
-  @Test
-  void shouldNotCallDownstreamServices_whenOnlyAChildTicketIsRequested_andExceptionThrown() {
-    var ticketRequest = new TicketRequest(TicketType.CHILD, 1);
+  @ParameterizedTest
+  @EnumSource(names = {"CHILD", "INFANT"})
+  void shouldNotCallDownstreamServices_whenNoAdultTicketIsRequested_andExceptionThrown(TicketType ticketType) {
+    var ticketRequest = new TicketRequest(ticketType, 1);
     try {
       underTest.purchaseTickets(1L, ticketRequest);
     } catch (InvalidBookingException e) {
