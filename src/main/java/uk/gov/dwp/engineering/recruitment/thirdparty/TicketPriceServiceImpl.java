@@ -9,7 +9,7 @@ public class TicketPriceServiceImpl implements TicketPriceService {
   @Override
   public BigDecimal getPrice(TicketType ticketType) {
     if (ticketType == null) {
-      throw new InvalidPriceException("");
+      throw new InvalidPriceException("ticket type must not be null");
     }
     return null;
   }
