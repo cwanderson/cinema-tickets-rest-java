@@ -56,7 +56,7 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
       throw new InvalidBookingException("ticketCount must not be less than zero");
     }
     if (ticketRequest.ticketCount() > MAX_TICKET_COUNT) {
-      throw new InvalidBookingException("");
+      throw new InvalidBookingException("ticketCount must not be greater than " + MAX_TICKET_COUNT);
     }
   }
 }
