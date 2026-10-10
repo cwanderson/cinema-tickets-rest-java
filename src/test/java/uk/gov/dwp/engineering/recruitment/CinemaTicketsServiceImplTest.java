@@ -251,4 +251,15 @@ class CinemaTicketsServiceImplTest {
       assertEquals("ticketCount must not be greater than 25", e.getMessage());
     }
   }
+
+  @Test
+  void shouldNotCallDownstreamServices_whenTicketCountInTicketRequestIsGreaterThanTwentyFive_andExceptionThrown() {
+    var ticketRequest = new TicketRequest(TicketType.ADULT, 26);
+    try {
+      underTest.purchaseTickets(1L, ticketRequest);
+    } catch (InvalidBookingException e) {
+      verifyNoInteractions(paymentService);
+      verifyNoInteractions(seatReservationService);
+    }
+  }
 }
