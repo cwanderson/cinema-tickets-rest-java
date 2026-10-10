@@ -1,5 +1,6 @@
 package uk.gov.dwp.engineering.recruitment;
 
+import java.math.BigDecimal;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.stereotype.Service;
@@ -53,6 +54,11 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
     var ticketCountsByType = countTicketsByType(ticketRequests);
 
     validateTicketCounts(ticketCountsByType);
+
+    var paymentAmount = new BigDecimal("25.99")
+            .multiply(new BigDecimal(ticketCountsByType.get(TicketType.ADULT)));
+    paymentService.debitAccount(accountId, paymentAmount);
+
     return null;
   }
 
