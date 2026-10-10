@@ -388,4 +388,13 @@ class CinemaTicketsServiceImplTest {
 
     verify(paymentService).debitAccount(1L, expectedAmount);
   }
+
+  @Test
+  void shouldCallSeatReservationServiceWithAccountIdAndCorrectSeatCount_whenOneAdultTicketIsRequested() {
+    var adultTicketRequest = new TicketRequest(TicketType.ADULT, 1);
+
+    underTest.purchaseTickets(1L, adultTicketRequest);
+
+    verify(seatReservationService).reserveSeats(1L, 1L);
+  }
 }
