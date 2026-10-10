@@ -192,4 +192,15 @@ class CinemaTicketsServiceImplTest {
       assertEquals("ticketType must not be null", e.getMessage());
     }
   }
+
+  @Test
+  void shouldNotCallDownstreamServices_whenTicketTypeInTicketRequestIsNull_andExceptionThrown() {
+    var ticketRequest = new TicketRequest(null, 0);
+    try {
+      underTest.purchaseTickets(1L, ticketRequest);
+    } catch (InvalidBookingException e) {
+      verifyNoInteractions(paymentService);
+      verifyNoInteractions(seatReservationService);
+    }
+  }
 }
