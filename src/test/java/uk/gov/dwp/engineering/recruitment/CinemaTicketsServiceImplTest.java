@@ -366,4 +366,14 @@ class CinemaTicketsServiceImplTest {
 
     verify(paymentService).debitAccount(1L, new BigDecimal("25.99"));
   }
+
+  @Test
+  void shouldCallPaymentServiceWithAccountIdAndCorrectAmount_whenOneAdultTicketAndOneChildTicketIsRequested() {
+    var adultTicketRequest = new TicketRequest(TicketType.ADULT, 1);
+    var childTicketRequest = new TicketRequest(TicketType.CHILD, 1);
+
+    underTest.purchaseTickets(1L, adultTicketRequest, childTicketRequest);
+
+    verify(paymentService).debitAccount(1L, new BigDecimal("43.49"));
+  }
 }
