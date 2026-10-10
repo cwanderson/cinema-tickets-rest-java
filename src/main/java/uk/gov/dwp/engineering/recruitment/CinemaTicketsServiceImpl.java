@@ -39,8 +39,14 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
     if (ticketRequests.length == 0) {
       throw new InvalidBookingException("ticketRequests must not be empty");
     }
+    int totalTicketCount = 0;
     for (var ticketRequest : ticketRequests) {
       validateTicketRequest(ticketRequest);
+
+      totalTicketCount += ticketRequest.ticketCount();
+      if (totalTicketCount > MAX_TICKET_COUNT) {
+        throw new InvalidBookingException("");
+      }
     }
     return null;
   }
