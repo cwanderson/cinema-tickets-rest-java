@@ -10,6 +10,7 @@ import uk.gov.dwp.engineering.recruitment.thirdparty.SeatReservationService;
 @Service
 public class CinemaTicketsServiceImpl implements CinemaTicketsService {
 
+  private static final int MAX_TICKET_COUNT = 25;
   private static final long ZERO = 0L;
 
   private final PaymentService paymentService;
@@ -53,6 +54,9 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
     }
     if (ticketRequest.ticketCount() < ZERO) {
       throw new InvalidBookingException("ticketCount must not be less than zero");
+    }
+    if (ticketRequest.ticketCount() > MAX_TICKET_COUNT) {
+      throw new InvalidBookingException("");
     }
   }
 }
