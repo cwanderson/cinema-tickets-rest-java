@@ -45,4 +45,11 @@ class TicketPriceServiceImplTest {
 
     assertEquals(new BigDecimal("17.50"), actual);
   }
+
+  @Test
+  void shouldReturnCorrectPrice_whenPriceForInfantTicketTypeRequested() {
+    var actual = underTest.getPrice(TicketType.INFANT);
+
+    assertEquals(new BigDecimal("0.00"), actual);
+  }
 }
