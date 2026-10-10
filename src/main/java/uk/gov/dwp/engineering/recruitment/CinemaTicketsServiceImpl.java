@@ -1,5 +1,7 @@
 package uk.gov.dwp.engineering.recruitment;
 
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.stereotype.Service;
 import uk.gov.dwp.engineering.recruitment.domain.BookingConfirmation;
 import uk.gov.dwp.engineering.recruitment.domain.TicketRequest;
@@ -45,30 +47,12 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
       final TicketRequest... ticketRequests)
       throws InvalidBookingException {
     validateAccountId(accountId);
+
     validateTicketRequests(ticketRequests);
 
-    int totalTicketCount = 0;
-    int adultTicketCount = 0;
-    int infantTicketCount = 0;
-    for (var ticketRequest : ticketRequests) {
-      validateTicketRequest(ticketRequest);
+    var ticketCountsByType = countTicketsByType(ticketRequests);
 
-      totalTicketCount += ticketRequest.ticketCount();
-      if (totalTicketCount > MAX_TICKET_COUNT) {
-        throw new InvalidBookingException(MAX_TOTAL_TICKET_COUNT_EXCEEDED);
-      }
-      if (ticketRequest.type() == TicketType.ADULT) {
-        adultTicketCount += ticketRequest.ticketCount();
-      } else if (ticketRequest.type() == TicketType.INFANT) {
-        infantTicketCount += ticketRequest.ticketCount();
-      }
-    }
-    if (adultTicketCount <= 0) {
-      throw new InvalidBookingException(ADULT_TICKET_COUNT_IS_ZERO);
-    }
-    if (infantTicketCount > adultTicketCount) {
-      throw new InvalidBookingException(INFANT_TICKET_COUNT_EXCEEDS_ADULT_TICKET_COUNT);
-    }
+    validateTicketCounts(ticketCountsByType);
     return null;
   }
 
@@ -88,6 +72,9 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
     if (ticketRequests.length == 0) {
       throw new InvalidBookingException(TICKET_REQUESTS_IS_EMPTY);
     }
+    for (var ticketRequest : ticketRequests) {
+      validateTicketRequest(ticketRequest);
+    }
   }
 
   private void validateTicketRequest(TicketRequest ticketRequest) {
@@ -102,6 +89,37 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
     }
     if (ticketRequest.ticketCount() > MAX_TICKET_COUNT) {
       throw new InvalidBookingException(MAX_TICKET_COUNT_EXCEEDED);
+    }
+  }
+
+  private Map<TicketType, Integer> countTicketsByType(TicketRequest... ticketRequests) {
+    int adultTicketCount = 0;
+    int childTicketCount = 0;
+    int infantTicketCount = 0;
+    for (var ticketRequest : ticketRequests) {
+      switch (ticketRequest.type()) {
+        case ADULT -> adultTicketCount += ticketRequest.ticketCount();
+        case CHILD -> childTicketCount += ticketRequest.ticketCount();
+        case INFANT -> infantTicketCount += ticketRequest.ticketCount();
+        case null, default -> { }
+      }
+    }
+    return Map.of(TicketType.ADULT, adultTicketCount,
+            TicketType.CHILD, childTicketCount,
+            TicketType.INFANT, infantTicketCount);
+  }
+
+  private void validateTicketCounts(Map<TicketType, Integer> ticketCountsByType) {
+    var totalTicketCount = new AtomicInteger();
+    ticketCountsByType.forEach((t, i) -> totalTicketCount.addAndGet(i));
+    if (totalTicketCount.get() > MAX_TICKET_COUNT) {
+      throw new InvalidBookingException(MAX_TOTAL_TICKET_COUNT_EXCEEDED);
+    }
+    if (ticketCountsByType.get(TicketType.ADULT) <= 0) {
+      throw new InvalidBookingException(ADULT_TICKET_COUNT_IS_ZERO);
+    }
+    if (ticketCountsByType.get(TicketType.INFANT) > ticketCountsByType.get(TicketType.ADULT)) {
+      throw new InvalidBookingException(INFANT_TICKET_COUNT_EXCEEDS_ADULT_TICKET_COUNT);
     }
   }
 }
