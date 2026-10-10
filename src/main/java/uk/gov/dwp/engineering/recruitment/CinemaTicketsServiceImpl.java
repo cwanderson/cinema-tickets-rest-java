@@ -44,18 +44,9 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
   public BookingConfirmation purchaseTickets(final Long accountId,
       final TicketRequest... ticketRequests)
       throws InvalidBookingException {
-    if (accountId == null) {
-      throw new InvalidBookingException(ACCOUNT_ID_IS_NULL);
-    }
-    if (accountId <= ZERO) {
-      throw new InvalidBookingException(ACCOUNT_ID_LESS_THAN_ZERO);
-    }
-    if (ticketRequests == null) {
-      throw new InvalidBookingException(TICKET_REQUESTS_IS_NULL);
-    }
-    if (ticketRequests.length == 0) {
-      throw new InvalidBookingException(TICKET_REQUESTS_IS_EMPTY);
-    }
+    validateAccountId(accountId);
+    validateTicketRequests(ticketRequests);
+
     int totalTicketCount = 0;
     int adultTicketCount = 0;
     int infantTicketCount = 0;
@@ -79,6 +70,24 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
       throw new InvalidBookingException(INFANT_TICKET_COUNT_EXCEEDS_ADULT_TICKET_COUNT);
     }
     return null;
+  }
+
+  private void validateAccountId(Long accountId) {
+    if (accountId == null) {
+      throw new InvalidBookingException(ACCOUNT_ID_IS_NULL);
+    }
+    if (accountId <= ZERO) {
+      throw new InvalidBookingException(ACCOUNT_ID_LESS_THAN_ZERO);
+    }
+  }
+
+  private void validateTicketRequests(TicketRequest... ticketRequests) {
+    if (ticketRequests == null) {
+      throw new InvalidBookingException(TICKET_REQUESTS_IS_NULL);
+    }
+    if (ticketRequests.length == 0) {
+      throw new InvalidBookingException(TICKET_REQUESTS_IS_EMPTY);
+    }
   }
 
   private void validateTicketRequest(TicketRequest ticketRequest) {
