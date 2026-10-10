@@ -6,11 +6,9 @@ import org.junit.jupiter.api.Test;
 
 class InvalidPriceExceptionTest {
 
-  private InvalidPriceException underTest;
-
   @Test
   void shouldReturnExpectedMessage_whenExceptionCreated() {
-    underTest = new InvalidPriceException("message");
+    var underTest = new InvalidPriceException("message");
 
     assertEquals("message", underTest.getMessage());
   }
