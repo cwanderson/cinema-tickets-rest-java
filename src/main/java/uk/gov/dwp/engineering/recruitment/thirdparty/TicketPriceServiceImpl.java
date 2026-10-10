@@ -11,6 +11,6 @@ public class TicketPriceServiceImpl implements TicketPriceService {
     if (ticketType == null) {
       throw new InvalidPriceException("ticket type must not be null");
     }
-    return null;
+    return new BigDecimal("25.99");
   }
 }
