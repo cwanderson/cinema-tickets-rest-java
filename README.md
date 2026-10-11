@@ -157,6 +157,7 @@ enum would fail. Making those tests run first meant they didn't fail.
 -   Moving this to a hex architecture in the future would allow a clean separation of concerns between the domain logic and the controller on an inbound port and the payment, seat reservation and ticket price services on an outbound port.
 This would also allow the introduction of DTOs so that the domain objects are not being exposed.
 -   Some form of contract testing be it using `Pact` or `Spring Cloud Contract` would be a good next step.
+-   The Bookings are not idempotent. If the same request is sent multiple times, then the account will be charged multiple times amd multiple seats would be reserved. Some kind of transaction id in the request could be used to mitigate against this.
 
 [Back to top](#cinema-tickets-code-test)
 
