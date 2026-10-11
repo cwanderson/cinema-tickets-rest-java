@@ -2,12 +2,16 @@
 
 ## Contents
 
--   [Objective](#objective)
+-   [Supplied Objective](#objective)
     -   [Business Rules](#business-rules)
     -   [Constraints](#constraints)
     -   [Assumptions](#assumptions)
     -   [Your Task](#your-task)
--   [Solution](#solution)
+-   [My Solution](#my-solution)
+    -   [My Assumptions](#my-assumptions)
+    -   [Validation Rules](#validation-rules)
+    -   [Approach Taken](#approach-taken)
+    -   [Running the Service](#running-the-service)
 
 ## Objective
 
@@ -67,7 +71,7 @@ Any assumptions outside of the list above should be correctly and thoroughly doc
 
 ### Your Task
 
-Provide a working implementation of 'CinemaTicketsServiceImpl` that:
+Provide a working implementation of `CinemaTicketsServiceImpl` that:
 
 -   Considers the above objective, business rules, constraints & assumptions.
 -   Calculates the correct amount for the requested tickets and makes a payment request to the `PaymentService`.
@@ -79,6 +83,138 @@ Provide a working implementation of 'CinemaTicketsServiceImpl` that:
 
 [Back to top](#cinema-tickets-code-test)
 
-## Solution
+## My Solution
+
+### My Assumptions
+
+I have made the following assumptions:
+
+-   An INFANT must sit on an ADULT lap.
+-   An ADULT can only have one INFANT sitting on their lap.
+-   The supplied business rules state that `an INFANT does not pay for a ticket` and that `CHILD and INFANT tickets cannot be purchased without purchasing an ADULT ticket`. To me, these statements are ambiguous as it could just mean that
+as the INFANT ticket price is currently £0.00 then the INFANT ticket is not paid for but is still purchased. With that in mind, I have assumed that as an INFANT will be sitting on an ADULT lap:
+    -   any INFANT tickets purchased will be included in the cost calculation.
+    -   any INFANT tickets purchased will count towards the number of tickets purchased.
+-   There are no limits placed on the ratio of CHILD to ADULT tickets, so it will be possible to purchase one ADULT tickets and twenty-four CHILD tickets.
+-   The `PaymentService` is called before the `SeatReservationService`.
+-   No error checking/recovery is required for the `PaymentService`.
+-   No error checking/recovery is required for the `SeatReservationService`.
+-   The ticket prices are not dynamic, but fixed at `£25.99` for an `ADULT` ticket `£17.50` for a `CHILD` ticket and `£0.00` for an `INFANT` ticket.
+
+Under normal circumstances I would seek clarification of these assumptions at a story refinement or three amigos meeting.
+
+[Back to top](#cinema-tickets-code-test)
+
+### Validation Rules
+
+I have applied the following validation rules taking into consideration the stated business rules and assumptions, the already defined contract specification, and my own assumptions about the requirements:
+
+-   The accountId must not be null.
+-   The accountId must be greater than zero.
+-   The ticketRequests array must not be null.
+-   The ticketRequests array must not contain a null ticketRequest.
+-   The ticketRequests array must not be empty.
+-   A ticketRequest must not have a null ticketType.
+-   A ticketRequest ticketType must be one of `ADULT`, `CHILD` or `INFANT`.
+-   A ticketRequest must not have a ticketCount of less than zero. This is based on the contract specification.
+-   The total adult ticket count must be greater than zero.
+-   The total infant ticket count must not be greater than the total adult ticket count.
+-   The total ticket count must not be less than one.
+-   The total ticket count must not exceed 25.
+-   No validation required on the response from the `PaymentService`.
+-   No validation required on the response from the `SeatReservationService`.
+
+[Back to top](#cinema-tickets-code-test)
+
+### Approach Taken
+
+-   Code/test quality (`Checkstyle`;`PMD`;`PiTest`;`SpotBugs`) and test coverage (`Jacoco`) tools were added to the project and configured to run on every `mvn clean verify`.
+-   All code was written using a TDD approach.
+-   Baseline tests were written for the code that didn't have any coverage before implementing any of the requirements.
+-   Validation scenarios were added first covering all the validation rules.
+-   With the validation scenarios covered I moved on the ticket cost calculation and then to the seat count calculation.
+-   The ticket cost and seat count calculations are kept within the `CinemaTicketsServiceImpl` class as they are fairly simple and don't make the class feel too bloated ast this stage.
+-   Instead of hard-coding the ticket prices in the `CinemaTicketsServiceImpl` class I extract this out to a `TicketPriceService`. This was after noticing that the code I had written
+for the cost calculation wasn't counting any `INFANT` tickets. This was because they are priced at `£0.00` and the unit tests that checked the prices all passed as it wouldn't make any
+difference if they were being counted or not. By mocking the `TicketPriceService` I could alter the `INFANT` ticket price in the `CinemaTicketsServiceImpl` unit tests and prove
+that `INFANT` tickets were now being included in the ticket cost calculation.
+-   Finally, the `BookingConfirmation` was tested.
+-   The basic logic of the `CinemaTicketsController` was tested in unit test as part of the baseline tests.
+-   With the unit tests all green and the service implementation completed I moved on to writing a component test to exercise the validation and business rules against the `CinemaTicketsController`.
+The component test, `CinemaTicketsComponentTest`, runs using the `@SpringBootTest` annotation, instantiating a real `CinemaTicketsController`, injecting a real `CinemaTicketsServiceImpl` and
+injecting mocks of the `PaymentService`, `SeatReservationService` and `TicketPriceService` into the `CinemaTicketsServiceImpl`. A `MockMvc` object is autowired to allow HTTP requests to be
+made to the `CinemaTicketsController` and the resulting responses to then be asserted against.
+
+[Back to top](#cinema-tickets-code-test)
+
+### Running the Service
+
+Requires JDK 21 and Maven 3.10+.
+
+This assumes that you already have the code repository cloned to a local directory.
+
+```shell
+mvn clean verify
+mvn spring-boot:run
+```
+
+This will start the service and will be available at <http://localhost:8080>
+
+Example successful booking request:
+
+```shell
+curl -X 'POST' \
+  'http://localhost:8080/cinema/bookings' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "accountId": 1234,
+  "ticketRequests": [
+    {
+      "type": "ADULT",
+      "ticketCount": 1
+    }
+  ]
+}'
+```
+
+Example successful response:
+
+```shell
+{
+  "accountId": 1234,
+  "seatCount": 1,
+  "totalCost": 25.99
+}
+```
+
+Example invalid booking request:
+
+```shell
+curl -X 'POST' \
+  'http://localhost:8080/cinema/bookings' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "accountId": 1234,
+  "ticketRequests": [
+    {
+      "type": "ADULT",
+      "ticketCount": 0
+    }
+  ]
+}'
+```
+
+Example invalid booking response:
+
+```shell
+{
+  "detail":"adult ticketCount must be greater than zero",
+  "instance":"/cinema/bookings",
+  "status":400,
+  "title":"Bad Request"
+}
+```
 
 [Back to top](#cinema-tickets-code-test)
