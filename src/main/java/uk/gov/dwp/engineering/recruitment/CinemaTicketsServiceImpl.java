@@ -60,16 +60,10 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
 
     validateTicketCounts(ticketCountsByType);
 
-    var paymentAmount = ticketPriceService.getPrice(TicketType.ADULT)
-            .multiply(new BigDecimal(ticketCountsByType.get(TicketType.ADULT)));
-    paymentAmount = paymentAmount.add(ticketPriceService.getPrice(TicketType.CHILD)
-            .multiply(new BigDecimal(ticketCountsByType.get(TicketType.CHILD))));
-    paymentAmount = paymentAmount.add(ticketPriceService.getPrice(TicketType.INFANT)
-            .multiply(new BigDecimal(ticketCountsByType.get(TicketType.INFANT))));
+    var paymentAmount = calculatePaymentAmount(ticketCountsByType);
     paymentService.debitAccount(accountId, paymentAmount);
 
-    var seatCount = ticketCountsByType.get(TicketType.ADULT).longValue();
-    seatCount += ticketCountsByType.get(TicketType.CHILD).longValue();
+    var seatCount = calculateSeatCount(ticketCountsByType);
     seatReservationService.reserveSeats(accountId, seatCount);
 
     return new BookingConfirmation(accountId, seatCount, paymentAmount);
@@ -140,5 +134,26 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
     if (ticketCountsByType.get(TicketType.INFANT) > ticketCountsByType.get(TicketType.ADULT)) {
       throw new InvalidBookingException(INFANT_TICKET_COUNT_EXCEEDS_ADULT_TICKET_COUNT);
     }
+  }
+
+  private BigDecimal calculatePaymentAmount(Map<TicketType, Integer> ticketCountsByType) {
+    var adultTicketPrice = ticketPriceService.getPrice(TicketType.ADULT);
+    var childTicketPrice = ticketPriceService.getPrice(TicketType.CHILD);
+    var infantTicketPrice = ticketPriceService.getPrice(TicketType.INFANT);
+
+    var adultTicketCount = new BigDecimal(ticketCountsByType.get(TicketType.ADULT));
+    var childTicketCount = new BigDecimal(ticketCountsByType.get(TicketType.CHILD));
+    var infantTicketCount = new BigDecimal(ticketCountsByType.get(TicketType.INFANT));
+
+    var paymentAmount = adultTicketPrice.multiply(adultTicketCount);
+    paymentAmount = paymentAmount.add(childTicketPrice.multiply(childTicketCount));
+    paymentAmount = paymentAmount.add(infantTicketPrice.multiply(infantTicketCount));
+    return paymentAmount;
+  }
+
+  private long calculateSeatCount(Map<TicketType, Integer> ticketCountsByType) {
+    var seatCount = ticketCountsByType.get(TicketType.ADULT).longValue();
+    seatCount += ticketCountsByType.get(TicketType.CHILD).longValue();
+    return seatCount;
   }
 }
