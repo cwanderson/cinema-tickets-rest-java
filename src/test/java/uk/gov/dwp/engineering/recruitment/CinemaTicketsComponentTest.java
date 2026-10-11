@@ -91,4 +91,31 @@ class CinemaTicketsComponentTest {
     var problemDetail = objectMapper.readValue(contentAsString, ProblemDetail.class);
     assertEquals(expected, problemDetail);
   }
+
+  @Test
+  void givenABookingIsMadeWithAnUnknownTicketType_whenTheBookingIsRequested_thenAnErrorResponseIsReturned()
+          throws Exception {
+    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Failed to read request");
+    expected.setInstance(new URI("/cinema/bookings"));
+    var ticketRequest = objectMapper.createObjectNode()
+            .put("type", "UNKNOWN")
+            .put("ticketCount", 1);
+    var ticketRequests = objectMapper.createArrayNode()
+            .add(ticketRequest);
+    var booking = objectMapper.createObjectNode()
+            .put("accountId", 1L)
+            .set("ticketRequests", ticketRequests);
+
+    var response = mockMvc.perform(post("/cinema/bookings")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(booking.toString()))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+            .andReturn();
+
+    var contentAsString = response.getResponse().getContentAsString();
+    var problemDetail = objectMapper.readValue(contentAsString, ProblemDetail.class);
+    assertEquals(expected, problemDetail);
+  }
 }
