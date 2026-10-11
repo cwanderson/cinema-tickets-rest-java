@@ -2,6 +2,7 @@ package uk.gov.dwp.engineering.recruitment;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -428,5 +429,16 @@ class CinemaTicketsServiceImplTest {
     var actual = underTest.purchaseTickets(1L, adultTicketRequest);
 
     assertEquals(expected, actual);
+  }
+
+  @Test
+  void shouldCallPaymentServiceAndSeatReservationServiceInTheCorrectOrder_whenAValidBookingRequestIsMade() {
+    var adultTicketRequest = new TicketRequest(TicketType.ADULT, 1);
+    var inOrder = inOrder(paymentService, seatReservationService);
+
+    underTest.purchaseTickets(1L, adultTicketRequest);
+
+    inOrder.verify(paymentService).debitAccount(1L, new BigDecimal("25.99"));
+    inOrder.verify(seatReservationService).reserveSeats(1L, 1L);
   }
 }
