@@ -60,6 +60,7 @@ class CinemaTicketsServiceImplTest {
       try {
         underTest.purchaseTickets(null);
       } catch (InvalidBookingException e) {
+        verifyNoInteractions(ticketPriceService);
         verifyNoInteractions(paymentService);
         verifyNoInteractions(seatReservationService);
       }
@@ -84,6 +85,7 @@ class CinemaTicketsServiceImplTest {
       try {
         underTest.purchaseTickets(0L);
       } catch (InvalidBookingException e) {
+        verifyNoInteractions(ticketPriceService);
         verifyNoInteractions(paymentService);
         verifyNoInteractions(seatReservationService);
       }
@@ -108,6 +110,7 @@ class CinemaTicketsServiceImplTest {
       try {
         underTest.purchaseTickets(-1L);
       } catch (InvalidBookingException e) {
+        verifyNoInteractions(ticketPriceService);
         verifyNoInteractions(paymentService);
         verifyNoInteractions(seatReservationService);
       }
@@ -136,6 +139,7 @@ class CinemaTicketsServiceImplTest {
       try {
         underTest.purchaseTickets(1L, (TicketRequest[]) null);
       } catch (InvalidBookingException e) {
+        verifyNoInteractions(ticketPriceService);
         verifyNoInteractions(paymentService);
         verifyNoInteractions(seatReservationService);
       }
@@ -160,6 +164,7 @@ class CinemaTicketsServiceImplTest {
       try {
         underTest.purchaseTickets(1L);
       } catch (InvalidBookingException e) {
+        verifyNoInteractions(ticketPriceService);
         verifyNoInteractions(paymentService);
         verifyNoInteractions(seatReservationService);
       }
@@ -184,6 +189,7 @@ class CinemaTicketsServiceImplTest {
       try {
         underTest.purchaseTickets(1L, new TicketRequest[]{null});
       } catch (InvalidBookingException e) {
+        verifyNoInteractions(ticketPriceService);
         verifyNoInteractions(paymentService);
         verifyNoInteractions(seatReservationService);
       }
@@ -215,6 +221,7 @@ class CinemaTicketsServiceImplTest {
       try {
         underTest.purchaseTickets(1L, ticketRequest);
       } catch (InvalidBookingException e) {
+        verifyNoInteractions(ticketPriceService);
         verifyNoInteractions(paymentService);
         verifyNoInteractions(seatReservationService);
       }
@@ -242,6 +249,7 @@ class CinemaTicketsServiceImplTest {
       try {
         underTest.purchaseTickets(1L, ticketRequest);
       } catch (InvalidBookingException e) {
+        verifyNoInteractions(ticketPriceService);
         verifyNoInteractions(paymentService);
         verifyNoInteractions(seatReservationService);
       }
@@ -269,6 +277,7 @@ class CinemaTicketsServiceImplTest {
       try {
         underTest.purchaseTickets(1L, ticketRequest);
       } catch (InvalidBookingException e) {
+        verifyNoInteractions(ticketPriceService);
         verifyNoInteractions(paymentService);
         verifyNoInteractions(seatReservationService);
       }
@@ -300,6 +309,7 @@ class CinemaTicketsServiceImplTest {
       try {
         underTest.purchaseTickets(1L, ticketRequest, ticketRequest);
       } catch (InvalidBookingException e) {
+        verifyNoInteractions(ticketPriceService);
         verifyNoInteractions(paymentService);
         verifyNoInteractions(seatReservationService);
       }
@@ -330,6 +340,7 @@ class CinemaTicketsServiceImplTest {
       try {
         underTest.purchaseTickets(1L, ticketRequest);
       } catch (InvalidBookingException e) {
+        verifyNoInteractions(ticketPriceService);
         verifyNoInteractions(paymentService);
         verifyNoInteractions(seatReservationService);
       }
@@ -360,6 +371,7 @@ class CinemaTicketsServiceImplTest {
       try {
         underTest.purchaseTickets(1L, infantTicketRequest, adultTicketRequest);
       } catch (InvalidBookingException e) {
+        verifyNoInteractions(ticketPriceService);
         verifyNoInteractions(paymentService);
         verifyNoInteractions(seatReservationService);
       }
@@ -438,12 +450,15 @@ class CinemaTicketsServiceImplTest {
   }
 
   @Test
-  void shouldCallPaymentServiceAndSeatReservationServiceInTheCorrectOrder_whenAValidBookingRequestIsMade() {
+  void shouldCallDownstreamServicesInTheCorrectOrder_whenAValidBookingRequestIsMade() {
     var adultTicketRequest = new TicketRequest(TicketType.ADULT, 1);
-    var inOrder = inOrder(paymentService, seatReservationService);
+    var inOrder = inOrder(ticketPriceService, paymentService, seatReservationService);
 
     underTest.purchaseTickets(1L, adultTicketRequest);
 
+    inOrder.verify(ticketPriceService).getPrice(TicketType.ADULT);
+    inOrder.verify(ticketPriceService).getPrice(TicketType.CHILD);
+    inOrder.verify(ticketPriceService).getPrice(TicketType.INFANT);
     inOrder.verify(paymentService).debitAccount(1L, new BigDecimal("25.99"));
     inOrder.verify(seatReservationService).reserveSeats(1L, 1L);
   }
@@ -487,5 +502,30 @@ class CinemaTicketsServiceImplTest {
     underTest.purchaseTickets(1L, adultTicketRequest, infantTicketRequest);
 
     verify(ticketPriceService).getPrice(TicketType.INFANT);
+  }
+
+  @Test
+  void shouldCalculateCorrectTotalCost_whenInfantTicketPriceChanges() {
+    var adultTicketRequest = new TicketRequest(TicketType.ADULT, 1);
+    var infantTicketRequest = new TicketRequest(TicketType.INFANT, 1);
+    var expected = new BookingConfirmation(1L, 1L, new BigDecimal("27.49"));
+    when(ticketPriceService.getPrice(TicketType.INFANT)).thenReturn(new BigDecimal("1.50"));
+
+    var actual = underTest.purchaseTickets(1L, adultTicketRequest, infantTicketRequest);
+
+    assertEquals(expected, actual);
+  }
+
+  @Test
+  void shouldCallTicketPriceServiceOnlyThreeTimes_whenAValidBookingRequestIsMade() {
+    var adultTicketRequest = new TicketRequest(TicketType.ADULT, 1);
+    var inOrder = inOrder(ticketPriceService);
+
+    underTest.purchaseTickets(1L, adultTicketRequest);
+
+    inOrder.verify(ticketPriceService).getPrice(TicketType.ADULT);
+    inOrder.verify(ticketPriceService).getPrice(TicketType.CHILD);
+    inOrder.verify(ticketPriceService).getPrice(TicketType.INFANT);
+    inOrder.verifyNoMoreInteractions();
   }
 }
