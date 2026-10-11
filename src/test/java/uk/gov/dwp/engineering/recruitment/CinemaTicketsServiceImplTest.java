@@ -34,6 +34,7 @@ class CinemaTicketsServiceImplTest {
   void setup() {
     underTest = new CinemaTicketsServiceImpl(paymentService, seatReservationService, ticketPriceService);
     when(ticketPriceService.getPrice(TicketType.ADULT)).thenReturn(new BigDecimal("25.99"));
+    when(ticketPriceService.getPrice(TicketType.CHILD)).thenReturn(new BigDecimal("17.50"));
   }
 
   @Nested
