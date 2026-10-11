@@ -8,12 +8,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
+import java.net.URI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.databind.ObjectMapper;
@@ -66,5 +69,26 @@ class CinemaTicketsComponentTest {
     assertEquals(1L, bookingConfirmation.accountId());
     assertEquals(1L, bookingConfirmation.seatCount());
     assertEquals(new BigDecimal("25.99"), bookingConfirmation.totalCost());
+  }
+
+  @Test
+  void givenABookingIsMadeForOneInfantTicket_whenTheBookingIsRequested_thenAnErrorResponseIsReturned()
+          throws Exception {
+    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "adult ticketCount must be greater than zero");
+    expected.setInstance(new URI("/cinema/bookings"));
+    var infantTicketRequest = new TicketRequest(TicketType.INFANT, 1);
+    var booking = new Booking(1L, infantTicketRequest);
+
+    var response = mockMvc.perform(post("/cinema/bookings")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(booking)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+            .andReturn();
+
+    var contentAsString = response.getResponse().getContentAsString();
+    var problemDetail = objectMapper.readValue(contentAsString, ProblemDetail.class);
+    assertEquals(expected, problemDetail);
   }
 }
