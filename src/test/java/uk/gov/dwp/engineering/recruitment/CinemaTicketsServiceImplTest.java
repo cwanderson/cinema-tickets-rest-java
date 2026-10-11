@@ -19,17 +19,19 @@ import uk.gov.dwp.engineering.recruitment.domain.TicketType;
 import uk.gov.dwp.engineering.recruitment.exception.InvalidBookingException;
 import uk.gov.dwp.engineering.recruitment.thirdparty.PaymentService;
 import uk.gov.dwp.engineering.recruitment.thirdparty.SeatReservationService;
+import uk.gov.dwp.engineering.recruitment.thirdparty.TicketPriceService;
 
 class CinemaTicketsServiceImplTest {
 
   private final PaymentService paymentService = mock(PaymentService.class);
   private final SeatReservationService seatReservationService = mock(SeatReservationService.class);
+  private final TicketPriceService ticketPriceService = mock(TicketPriceService.class);
 
   private CinemaTicketsServiceImpl underTest;
 
   @BeforeEach
   void setup() {
-    underTest = new CinemaTicketsServiceImpl(paymentService, seatReservationService);
+    underTest = new CinemaTicketsServiceImpl(paymentService, seatReservationService, ticketPriceService);
   }
 
   @Nested
