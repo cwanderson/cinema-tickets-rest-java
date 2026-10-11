@@ -3,9 +3,8 @@ package uk.gov.dwp.engineering.recruitment.domain;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.jupiter.api.Test;
-
 import java.math.BigDecimal;
+import org.junit.jupiter.api.Test;
 
 class BookingConfirmationTest {
 

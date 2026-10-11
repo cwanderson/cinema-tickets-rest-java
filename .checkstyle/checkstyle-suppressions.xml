@@ -4,8 +4,16 @@
         "https://checkstyle.org/dtds/suppressions_1_0.dtd">
 
 <suppressions>
+    <suppress checks="AbbreviationAsWordInName"
+              files=".*" />
     <suppress checks="JavadocMethod"
               files=".*"/>
+    <suppress checks="LineLength"
+              files="CinemaTicketsComponentTest"/>
+    <suppress checks="LineLength"
+              files="CinemaTicketsServiceImplTest"/>
     <suppress checks="MissingJavadocType"
               files=".*"/>
+    <suppress checks="WhitespaceAfter"
+              files="CinemaTicketsApplicationTest" />
 </suppressions>

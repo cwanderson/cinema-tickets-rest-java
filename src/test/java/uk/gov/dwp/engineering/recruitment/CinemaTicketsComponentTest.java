@@ -74,7 +74,8 @@ class CinemaTicketsComponentTest {
   }
 
   @Test
-  void givenABookingForOneOfEachTypeOfTicket_whenTheBookingIsRequested_thenTheBookingConfirmationIsReturned() throws Exception {
+  void givenABookingForOneOfEachTypeOfTicket_whenTheBookingIsRequested_thenTheBookingConfirmationIsReturned()
+          throws Exception {
     var expected = new BookingConfirmation(1L, 2L, new BigDecimal("43.49"));
     var adultTicketRequest = new TicketRequest(TicketType.ADULT, 1);
     var childTicketRequest = new TicketRequest(TicketType.CHILD, 1);
@@ -97,7 +98,8 @@ class CinemaTicketsComponentTest {
   }
 
   @Test
-  void givenABookingWithMultipleTicketRequests_whenTheBookingIsRequested_thenTheBookingConfirmationIsReturned() throws Exception {
+  void givenABookingWithMultipleTicketRequests_whenTheBookingIsRequested_thenTheBookingConfirmationIsReturned()
+          throws Exception {
     var expected = new BookingConfirmation(1L, 6L, new BigDecimal("138.96"));
     var adultTicketRequest = new TicketRequest(TicketType.ADULT, 1);
     var childTicketRequest = new TicketRequest(TicketType.CHILD, 1);
@@ -127,7 +129,8 @@ class CinemaTicketsComponentTest {
   }
 
   @Test
-  void givenABookingWithTheMaximumNumberOfTickets_whenTheBookingIsRequested_thenTheBookingConfirmationIsReturned() throws Exception {
+  void givenABookingWithTheMaximumNumberOfTickets_whenTheBookingIsRequested_thenTheBookingConfirmationIsReturned()
+          throws Exception {
     var expected = new BookingConfirmation(1L, 25L, new BigDecimal("649.75"));
     var adultTicketRequest = new TicketRequest(TicketType.ADULT, 25);
     var booking = new Booking(1L, adultTicketRequest);
@@ -148,7 +151,8 @@ class CinemaTicketsComponentTest {
   }
 
   @Test
-  void givenABookingWithAZeroTicketRequest_whenTheBookingIsRequested_thenTheBookingConfirmationIsReturned() throws Exception {
+  void givenABookingWithAZeroTicketRequest_whenTheBookingIsRequested_thenTheBookingConfirmationIsReturned()
+          throws Exception {
     var expected = new BookingConfirmation(1L, 1L, new BigDecimal("25.99"));
     var adultTicketRequest = new TicketRequest(TicketType.ADULT, 1);
     var childTicketRequest = new TicketRequest(TicketType.CHILD, 0);
@@ -172,7 +176,8 @@ class CinemaTicketsComponentTest {
   @Test
   void givenABookingForAnInfantTicketWithoutAnAdultTicket_whenTheBookingIsRequested_thenAnErrorResponseIsReturned()
           throws Exception {
-    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "adult ticketCount must be greater than zero");
+    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
+            "adult ticketCount must be greater than zero");
     expected.setInstance(new URI("/cinema/bookings"));
     var infantTicketRequest = new TicketRequest(TicketType.INFANT, 1);
     var booking = new Booking(1L, infantTicketRequest);
@@ -193,8 +198,10 @@ class CinemaTicketsComponentTest {
   }
 
   @Test
-  void givenABookingForAChildTicketWithoutAnAdultTicket_whenTheBookingIsRequested_thenAnErrorResponseIsReturned() throws Exception {
-    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "adult ticketCount must be greater than zero");
+  void givenABookingForAChildTicketWithoutAnAdultTicket_whenTheBookingIsRequested_thenAnErrorResponseIsReturned()
+          throws Exception {
+    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
+            "adult ticketCount must be greater than zero");
     expected.setInstance(new URI("/cinema/bookings"));
     var childTicketRequest = new TicketRequest(TicketType.CHILD, 1);
     var booking = new Booking(1L, childTicketRequest);
@@ -217,7 +224,8 @@ class CinemaTicketsComponentTest {
   @Test
   void givenABookingHasMoreInfantTicketsThanThereAreAdultTickets_whenTheBookingIsRequested_thenAnErrorResponseIsReturned()
           throws Exception {
-    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "infant ticket count must not exceed adult ticket count");
+    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
+            "infant ticket count must not exceed adult ticket count");
     expected.setInstance(new URI("/cinema/bookings"));
     var adultTicketRequest = new TicketRequest(TicketType.ADULT, 1);
     var infantTicketRequest = new TicketRequest(TicketType.INFANT, 1);
@@ -241,7 +249,8 @@ class CinemaTicketsComponentTest {
   @Test
   void givenABookingIsMadeWithAnUnknownTicketType_whenTheBookingIsRequested_thenAnErrorResponseIsReturned()
           throws Exception {
-    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Failed to read request");
+    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
+            "Failed to read request");
     expected.setInstance(new URI("/cinema/bookings"));
     var ticketRequest = objectMapper.createObjectNode()
             .put("type", "UNKNOWN")
@@ -268,8 +277,10 @@ class CinemaTicketsComponentTest {
   }
 
   @Test
-  void givenABookingExceedsTheMaximumNumberOfTicketsInASingleRequest_whenTheBookingIsRequested_thenAnErrorResponseIsReturned() throws Exception {
-    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "ticketCount must not be greater than 25");
+  void givenABookingExceedsTheMaximumNumberOfTicketsInASingleRequest_whenTheBookingIsRequested_thenAnErrorResponseIsReturned()
+          throws Exception {
+    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
+            "ticketCount must not be greater than 25");
     expected.setInstance(new URI("/cinema/bookings"));
     var adultTicketRequest = new TicketRequest(TicketType.ADULT, 26);
     var booking = new Booking(1L, adultTicketRequest);
@@ -290,8 +301,10 @@ class CinemaTicketsComponentTest {
   }
 
   @Test
-  void givenABookingExceedsTheMaximumNumberOfTicketsAcrossAllRequests_whenTheBookingIsRequested_thenAnErrorResponseIsReturned() throws Exception {
-    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "total ticketCount must not be greater than 25");
+  void givenABookingExceedsTheMaximumNumberOfTicketsAcrossAllRequests_whenTheBookingIsRequested_thenAnErrorResponseIsReturned()
+          throws Exception {
+    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
+            "total ticketCount must not be greater than 25");
     expected.setInstance(new URI("/cinema/bookings"));
     var adultTicketRequest = new TicketRequest(TicketType.ADULT, 13);
     var childTicketRequest = new TicketRequest(TicketType.ADULT, 13);
@@ -313,8 +326,10 @@ class CinemaTicketsComponentTest {
   }
 
   @Test
-  void givenABookingWithANegativeCount_whenTheBookingIsRequested_thenAnErrorResponseIsReturned() throws Exception {
-    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "ticketCount must not be less than zero");
+  void givenABookingWithANegativeCount_whenTheBookingIsRequested_thenAnErrorResponseIsReturned()
+          throws Exception {
+    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
+            "ticketCount must not be less than zero");
     expected.setInstance(new URI("/cinema/bookings"));
     var adultTicketRequest = new TicketRequest(TicketType.ADULT, 1);
     var childTicketRequest = new TicketRequest(TicketType.CHILD, -1);
@@ -336,8 +351,10 @@ class CinemaTicketsComponentTest {
   }
 
   @Test
-  void givenABookingWithAnAccountIdOfZero_whenTheBookingIsRequested_thenAnErrorResponseIsReturned() throws Exception {
-    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "accountId must be greater than zero");
+  void givenABookingWithAnAccountIdOfZero_whenTheBookingIsRequested_thenAnErrorResponseIsReturned()
+          throws Exception {
+    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
+            "accountId must be greater than zero");
     expected.setInstance(new URI("/cinema/bookings"));
     var adultTicketRequest = new TicketRequest(TicketType.ADULT, 1);
     var booking = new Booking(0L, adultTicketRequest);
@@ -358,8 +375,10 @@ class CinemaTicketsComponentTest {
   }
 
   @Test
-  void givenABookingWithANegativeAccountId_whenTheBookingIsRequested_thenAnErrorResponseIsReturned() throws Exception {
-    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "accountId must be greater than zero");
+  void givenABookingWithANegativeAccountId_whenTheBookingIsRequested_thenAnErrorResponseIsReturned()
+          throws Exception {
+    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
+            "accountId must be greater than zero");
     expected.setInstance(new URI("/cinema/bookings"));
     var adultTicketRequest = new TicketRequest(TicketType.ADULT, 1);
     var booking = new Booking(-1L, adultTicketRequest);
@@ -380,8 +399,10 @@ class CinemaTicketsComponentTest {
   }
 
   @Test
-  void givenABookingWithANullAccountId_whenTheBookingIsRequested_thenAnErrorResponseIsReturned() throws Exception {
-    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "accountId must not be null");
+  void givenABookingWithANullAccountId_whenTheBookingIsRequested_thenAnErrorResponseIsReturned()
+          throws Exception {
+    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
+            "accountId must not be null");
     expected.setInstance(new URI("/cinema/bookings"));
     var adultTicketRequest = new TicketRequest(TicketType.ADULT, 1);
     var booking = new Booking(null, adultTicketRequest);
@@ -402,8 +423,10 @@ class CinemaTicketsComponentTest {
   }
 
   @Test
-  void givenABookingWithNoTicketRequests_whenTheBookingIsRequested_thenAnErrorResponseIsReturned() throws Exception {
-    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "ticketRequests must not be null");
+  void givenABookingWithNoTicketRequests_whenTheBookingIsRequested_thenAnErrorResponseIsReturned()
+          throws Exception {
+    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
+            "ticketRequests must not be null");
     expected.setInstance(new URI("/cinema/bookings"));
     var booking = new Booking(1L, (TicketRequest[]) null);
 
@@ -423,8 +446,10 @@ class CinemaTicketsComponentTest {
   }
 
   @Test
-  void givenABookingWithANullTicketType_whenTheBookingIsRequested_thenAnErrorResponseIsReturned() throws Exception {
-    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "ticketType must not be null");
+  void givenABookingWithANullTicketType_whenTheBookingIsRequested_thenAnErrorResponseIsReturned()
+          throws Exception {
+    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
+            "ticketType must not be null");
     expected.setInstance(new URI("/cinema/bookings"));
     var adultTicketRequest = new TicketRequest(null, 1);
     var booking = new Booking(1L, adultTicketRequest);
@@ -445,8 +470,10 @@ class CinemaTicketsComponentTest {
   }
 
   @Test
-  void givenABookingWithANullTicketCount_whenTheBookingIsRequested_thenAnErrorResponseIsReturned() throws Exception {
-    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Failed to read request");
+  void givenABookingWithANullTicketCount_whenTheBookingIsRequested_thenAnErrorResponseIsReturned()
+          throws Exception {
+    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
+            "Failed to read request");
     expected.setInstance(new URI("/cinema/bookings"));
     var ticketRequest = objectMapper.createObjectNode()
             .put("type", "ADULT")
@@ -473,8 +500,10 @@ class CinemaTicketsComponentTest {
   }
 
   @Test
-  void givenABookingWithANullTicketRequest_whenTheBookingIsRequested_thenAnErrorResponseIsReturned() throws Exception {
-    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "ticketRequest must not be null");
+  void givenABookingWithANullTicketRequest_whenTheBookingIsRequested_thenAnErrorResponseIsReturned()
+          throws Exception {
+    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
+            "ticketRequest must not be null");
     expected.setInstance(new URI("/cinema/bookings"));
     var adultTicketRequest = new TicketRequest(TicketType.ADULT, 1);
     var booking = new Booking(1L, adultTicketRequest, null);
@@ -495,8 +524,10 @@ class CinemaTicketsComponentTest {
   }
 
   @Test
-  void givenABookingWithAnEmptyTicketRequest_whenTheBookingIsRequested_thenAnErrorResponseIsReturned() throws Exception {
-    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "ticketRequests must not be empty");
+  void givenABookingWithAnEmptyTicketRequest_whenTheBookingIsRequested_thenAnErrorResponseIsReturned()
+          throws Exception {
+    var expected = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
+            "ticketRequests must not be empty");
     expected.setInstance(new URI("/cinema/bookings"));
     var booking = new Booking(1L);
 

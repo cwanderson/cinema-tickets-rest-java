@@ -23,7 +23,8 @@ class RestExceptionHandlerTest {
 
   @Test
   void shouldIncludeMessageFromInvalidBookingException_whenInvalidBookingExceptionIsHandled() {
-    var problemDetail = underTest.handleInvalidBookingException(new InvalidBookingException("Not implemented yet."));
+    var problemDetail = underTest.handleInvalidBookingException(
+            new InvalidBookingException("Not implemented yet."));
 
     assertEquals("Not implemented yet.", problemDetail.getDetail());
   }

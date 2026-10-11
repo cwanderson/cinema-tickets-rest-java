@@ -28,7 +28,8 @@ class CinemaTicketsControllerTest {
     var accountId = 1L;
     var ticketRequest = new TicketRequest(TicketType.ADULT, 1);
     var bookingConfirmation = new BookingConfirmation(accountId);
-    when(cinemaTicketsService.purchaseTickets(accountId, ticketRequest)).thenReturn(bookingConfirmation);
+    when(cinemaTicketsService.purchaseTickets(accountId, ticketRequest))
+            .thenReturn(bookingConfirmation);
     var booking = new Booking(accountId, ticketRequest);
 
     var response = underTest.makeBooking(booking);
@@ -41,7 +42,8 @@ class CinemaTicketsControllerTest {
     var accountId = 1L;
     var ticketRequest = new TicketRequest(TicketType.ADULT, 1);
     var bookingConfirmation = new BookingConfirmation(accountId);
-    when(cinemaTicketsService.purchaseTickets(accountId, ticketRequest)).thenReturn(bookingConfirmation);
+    when(cinemaTicketsService.purchaseTickets(accountId, ticketRequest))
+            .thenReturn(bookingConfirmation);
     var booking = new Booking(accountId, ticketRequest);
 
     var response = underTest.makeBooking(booking);

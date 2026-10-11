@@ -45,12 +45,10 @@ class TicketPriceServiceImplTest {
     try (var ticketTypeMockedStatic = mockStatic(TicketType.class)) {
       var unknownTicketType = mock(TicketType.class);
       doReturn(3).when(unknownTicketType).ordinal();
-      ticketTypeMockedStatic.when(TicketType::values)
-              .thenReturn(new TicketType[] {
-                      TicketType.ADULT,
-                      TicketType.CHILD,
-                      TicketType.INFANT,
-                      unknownTicketType });
+      ticketTypeMockedStatic.when(TicketType::values).thenReturn(
+              new TicketType[] {
+                TicketType.ADULT, TicketType.CHILD, TicketType.INFANT, unknownTicketType
+              });
 
       assertThrows(InvalidPriceException.class, () -> underTest.getPrice(unknownTicketType));
     }
@@ -62,12 +60,10 @@ class TicketPriceServiceImplTest {
     try (var ticketTypeMockedStatic = mockStatic(TicketType.class)) {
       var unknownTicketType = mock(TicketType.class);
       doReturn(3).when(unknownTicketType).ordinal();
-      ticketTypeMockedStatic.when(TicketType::values)
-              .thenReturn(new TicketType[] {
-                      TicketType.ADULT,
-                      TicketType.CHILD,
-                      TicketType.INFANT,
-                      unknownTicketType });
+      ticketTypeMockedStatic.when(TicketType::values).thenReturn(
+              new TicketType[] {
+                TicketType.ADULT, TicketType.CHILD, TicketType.INFANT, unknownTicketType
+              });
 
       assertThrows(InvalidPriceException.class, () -> underTest.getPrice(unknownTicketType));
     } catch (InvalidPriceException e) {

@@ -32,7 +32,10 @@ class CinemaTicketsServiceImplTest {
 
   @BeforeEach
   void setup() {
-    underTest = new CinemaTicketsServiceImpl(paymentService, seatReservationService, ticketPriceService);
+    underTest = new CinemaTicketsServiceImpl(
+            paymentService,
+            seatReservationService,
+            ticketPriceService);
     when(ticketPriceService.getPrice(TicketType.ADULT)).thenReturn(new BigDecimal("25.99"));
     when(ticketPriceService.getPrice(TicketType.CHILD)).thenReturn(new BigDecimal("17.50"));
     when(ticketPriceService.getPrice(TicketType.INFANT)).thenReturn(new BigDecimal("0.00"));
@@ -122,7 +125,8 @@ class CinemaTicketsServiceImplTest {
 
     @Test
     void shouldThrowInvalidBookingException_whenTicketRequestsIsNull() {
-      assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, (TicketRequest[]) null));
+      assertThrows(InvalidBookingException.class,
+              () -> underTest.purchaseTickets(1L, (TicketRequest[]) null));
     }
 
     @Test
@@ -172,7 +176,8 @@ class CinemaTicketsServiceImplTest {
 
     @Test
     void shouldThrowInvalidBookingException_whenTicketRequestsContainsANullTicketRequest() {
-      assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, new TicketRequest[]{null}));
+      assertThrows(InvalidBookingException.class,
+              () -> underTest.purchaseTickets(1L, new TicketRequest[]{null}));
     }
 
     @Test
@@ -202,7 +207,8 @@ class CinemaTicketsServiceImplTest {
     @Test
     void shouldThrowInvalidBookingException_whenTicketTypeInTicketRequestIsNull() {
       var ticketRequest = new TicketRequest(null, 0);
-      assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, ticketRequest));
+      assertThrows(InvalidBookingException.class,
+              () -> underTest.purchaseTickets(1L, ticketRequest));
     }
 
     @Test
@@ -230,7 +236,8 @@ class CinemaTicketsServiceImplTest {
     @Test
     void shouldThrowInvalidBookingException_whenTicketCountInTicketRequestIsLessThaZero() {
       var ticketRequest = new TicketRequest(TicketType.ADULT, -1);
-      assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, ticketRequest));
+      assertThrows(InvalidBookingException.class,
+              () -> underTest.purchaseTickets(1L, ticketRequest));
     }
 
     @Test
@@ -258,7 +265,8 @@ class CinemaTicketsServiceImplTest {
     @Test
     void shouldThrowInvalidBookingException_whenTicketCountInTicketRequestIsGreaterThanTwentyFive() {
       var ticketRequest = new TicketRequest(TicketType.ADULT, 26);
-      assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, ticketRequest));
+      assertThrows(InvalidBookingException.class,
+              () -> underTest.purchaseTickets(1L, ticketRequest));
     }
 
     @Test
@@ -290,7 +298,8 @@ class CinemaTicketsServiceImplTest {
     @Test
     void shouldThrowInvalidBookingException_whenTotalTicketCountRequestedIsGreaterThanTwentyFive() {
       var ticketRequest = new TicketRequest(TicketType.ADULT, 13);
-      assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, ticketRequest, ticketRequest));
+      assertThrows(InvalidBookingException.class,
+              () -> underTest.purchaseTickets(1L, ticketRequest, ticketRequest));
     }
 
     @Test
@@ -319,12 +328,14 @@ class CinemaTicketsServiceImplTest {
     @EnumSource(names = {"CHILD", "INFANT"})
     void shouldThrowInvalidBookingException_whenNoAdultTicketIsRequested(TicketType ticketType) {
       var ticketRequest = new TicketRequest(ticketType, 1);
-      assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, ticketRequest));
+      assertThrows(InvalidBookingException.class,
+              () -> underTest.purchaseTickets(1L, ticketRequest));
     }
 
     @ParameterizedTest
     @EnumSource(names = {"CHILD", "INFANT"})
-    void shouldIncludeDescriptiveMessageInException_whenNoAdultTicketIsRequested(TicketType ticketType) {
+    void shouldIncludeDescriptiveMessageInException_whenNoAdultTicketIsRequested(
+            TicketType ticketType) {
       var ticketRequest = new TicketRequest(ticketType, 1);
       try {
         underTest.purchaseTickets(1L, ticketRequest);
@@ -335,7 +346,8 @@ class CinemaTicketsServiceImplTest {
 
     @ParameterizedTest
     @EnumSource(names = {"CHILD", "INFANT"})
-    void shouldNotCallDownstreamServices_whenNoAdultTicketIsRequested_andExceptionThrown(TicketType ticketType) {
+    void shouldNotCallDownstreamServices_whenNoAdultTicketIsRequested_andExceptionThrown(
+            TicketType ticketType) {
       var ticketRequest = new TicketRequest(ticketType, 1);
       try {
         underTest.purchaseTickets(1L, ticketRequest);
@@ -350,7 +362,8 @@ class CinemaTicketsServiceImplTest {
     void shouldThrowInvalidBookingException_whenInfantTicketsExceedsAdultTicketsRequested() {
       var adultTicketRequest = new TicketRequest(TicketType.ADULT, 1);
       var infantTicketRequest = new TicketRequest(TicketType.INFANT, 2);
-      assertThrows(InvalidBookingException.class, () -> underTest.purchaseTickets(1L, infantTicketRequest, adultTicketRequest));
+      assertThrows(InvalidBookingException.class,
+              () -> underTest.purchaseTickets(1L, infantTicketRequest, adultTicketRequest));
     }
 
     @Test

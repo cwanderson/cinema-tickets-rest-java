@@ -180,6 +180,7 @@
           <configLocation>google_checks.xml</configLocation>
           <consoleOutput>true</consoleOutput>
           <failsOnError>true</failsOnError>
+          <includeTestSourceDirectory>true</includeTestSourceDirectory>
           <linkXRef>false</linkXRef>
           <suppressionsLocation>${project.basedir}/.checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
           <violationSeverity>warning</violationSeverity>
