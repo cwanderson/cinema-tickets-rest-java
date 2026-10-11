@@ -2,7 +2,7 @@
 
 ## Contents
 
--   [Supplied Objective](#objective)
+-   [Supplied Objective](#supplied-objective)
     -   [Business Rules](#business-rules)
     -   [Constraints](#constraints)
     -   [Assumptions](#assumptions)
@@ -11,9 +11,10 @@
     -   [My Assumptions](#my-assumptions)
     -   [Validation Rules](#validation-rules)
     -   [Approach Taken](#approach-taken)
+    -   [Miscellaneous/Next Steps](#miscellaneousnext-steps)
     -   [Running the Service](#running-the-service)
 
-## Objective
+## Supplied Objective
 
 This is a coding exercise which will allow you to demonstrate how you code and your approach to a given problem.
 
@@ -144,6 +145,18 @@ that `INFANT` tickets were now being included in the ticket cost calculation.
 The component test, `CinemaTicketsComponentTest`, runs using the `@SpringBootTest` annotation, instantiating a real `CinemaTicketsController`, injecting a real `CinemaTicketsServiceImpl` and
 injecting mocks of the `PaymentService`, `SeatReservationService` and `TicketPriceService` into the `CinemaTicketsServiceImpl`. A `MockMvc` object is autowired to allow HTTP requests to be
 made to the `CinemaTicketsController` and the resulting responses to then be asserted against.
+-   Conventional commits were used, but unfortunately I didn't get the pre-commit hook working until much later on in the development work, so some of my commits haven't been properly checked.
+
+[Back to top](#cinema-tickets-code-test)
+
+### Miscellaneous/Next Steps
+
+-   The OpenAPI specification differs in a couple of places from the supplied classes. There are a couple of way to remedy this depending on whether the spec has been made public or there are any contract tests.
+-   I had to set the order that the unit tests in the `TicketPriceServiceImplTest` ran in, as if the tests were run together in a random order, the tests that mocked the TicketType
+enum would fail. Making those tests run first meant they didn't fail.
+-   Moving this to a hex architecture in the future would allow a clean separation of concerns between the domain logic and the controller on an inbound port and the payment, seat reservation and ticket price services on an outbound port.
+This would also allow the introduction of DTOs so that the domain objects are not being exposed.
+-   Some form of contract testing be it using `Pact` or `Spring Cloud Contract` would be a good next step.
 
 [Back to top](#cinema-tickets-code-test)
 
