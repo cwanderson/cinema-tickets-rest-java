@@ -101,12 +101,6 @@ repos:
       - id: check-gitlab-ci
       - id: check-renovate
 
-  - repo: https://gitlab.com/dwp/secure-development/dwp-cli
-    rev: v4.1.0
-    hooks:
-      - id: check-catalog-info
-      - id: check-pre-commit-config
-
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
