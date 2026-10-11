@@ -60,7 +60,7 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
 
     validateTicketCounts(ticketCountsByType);
 
-    var paymentAmount = new BigDecimal("25.99")
+    var paymentAmount = ticketPriceService.getPrice(TicketType.ADULT)
             .multiply(new BigDecimal(ticketCountsByType.get(TicketType.ADULT)));
     paymentAmount = paymentAmount.add(new BigDecimal("17.50")
             .multiply(new BigDecimal(ticketCountsByType.get(TicketType.CHILD))));
