@@ -6,15 +6,19 @@ import uk.gov.dwp.engineering.recruitment.exception.InvalidPriceException;
 
 public class TicketPriceServiceImpl implements TicketPriceService {
 
+  private static final BigDecimal ADULT_TICKET_PRICE = new BigDecimal("25.99");
+  private static final BigDecimal CHILD_TICKET_PRICE = new BigDecimal("17.50");
+  private static final BigDecimal INFANT_TICKET_PRICE = new BigDecimal("0.00");
+
   @Override
   public BigDecimal getPrice(TicketType ticketType) {
     if (ticketType == null) {
       throw new InvalidPriceException("ticket type must not be null");
     }
     return switch (ticketType) {
-      case ADULT -> new BigDecimal("25.99");
-      case CHILD -> new BigDecimal("17.50");
-      case INFANT -> new BigDecimal("0.00");
+      case ADULT -> ADULT_TICKET_PRICE;
+      case CHILD -> CHILD_TICKET_PRICE;
+      case INFANT -> INFANT_TICKET_PRICE;
       default -> throw new InvalidPriceException("cannot determine price for unknown ticket type");
     };
   }
