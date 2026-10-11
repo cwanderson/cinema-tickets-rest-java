@@ -26,13 +26,21 @@ class TicketPriceServiceImplTest {
   }
 
   @Test
-  @Order(1)
   void shouldThrowInvalidPriceException_whenThePriceOfANullTicketTypeIsRequested() {
     assertThrows(InvalidPriceException.class, () -> underTest.getPrice(null));
   }
 
   @Test
-  @Order(2)
+  void shouldIncludeDescriptiveMessageInException_whenThePriceOfANullTicketTypeIsRequested() {
+    try {
+      underTest.getPrice(null);
+    } catch (InvalidPriceException e) {
+      assertEquals("ticket type must not be null", e.getMessage());
+    }
+  }
+
+  @Test
+  @Order(1)
   void shouldThrowInvalidPriceException_whenPriceForAnUnknownTicketTypeIsRequested() {
     try (var ticketTypeMockedStatic = mockStatic(TicketType.class)) {
       var unknownTicketType = mock(TicketType.class);
@@ -68,17 +76,6 @@ class TicketPriceServiceImplTest {
   }
 
   @Test
-  @Order(3)
-  void shouldIncludeDescriptiveMessageInException_whenThePriceOfANullTicketTypeIsRequested() {
-    try {
-      underTest.getPrice(null);
-    } catch (InvalidPriceException e) {
-      assertEquals("ticket type must not be null", e.getMessage());
-    }
-  }
-
-  @Test
-  @Order(4)
   void shouldReturnCorrectPrice_whenPriceForAdultTicketTypeRequested() {
     var actual = underTest.getPrice(TicketType.ADULT);
 
@@ -86,7 +83,6 @@ class TicketPriceServiceImplTest {
   }
 
   @Test
-  @Order(5)
   void shouldReturnCorrectPrice_whenPriceForChildTicketTypeRequested() {
     var actual = underTest.getPrice(TicketType.CHILD);
 
@@ -94,7 +90,6 @@ class TicketPriceServiceImplTest {
   }
 
   @Test
-  @Order(6)
   void shouldReturnCorrectPrice_whenPriceForInfantTicketTypeRequested() {
     var actual = underTest.getPrice(TicketType.INFANT);
 
