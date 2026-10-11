@@ -88,24 +88,11 @@ repos:
           - markdownlint-rule-titlecase@0.1.0
           - markdownlint-cli2-formatter-codequality@0.0.7
 
-  - repo: https://github.com/rbubley/mirrors-prettier
-    rev: v3.9.9
-    hooks:
-      - id: prettier
-        additional_dependencies:
-          - prettier@3.9.9
-
   - repo: https://github.com/python-jsonschema/check-jsonschema
     rev: 0.38.2
     hooks:
       - id: check-gitlab-ci
       - id: check-renovate
-
-  - repo: https://gitlab.com/dwp/secure-development/dwp-cli
-    rev: v4.1.0
-    hooks:
-      - id: check-catalog-info
-      - id: check-pre-commit-config
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
