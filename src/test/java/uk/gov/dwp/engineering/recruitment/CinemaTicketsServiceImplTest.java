@@ -441,4 +441,16 @@ class CinemaTicketsServiceImplTest {
     inOrder.verify(paymentService).debitAccount(1L, new BigDecimal("25.99"));
     inOrder.verify(seatReservationService).reserveSeats(1L, 1L);
   }
+
+  @Test
+  void shouldCallPaymentServiceAndSeatReservationServiceOnlyOnce_whenAValidBookingRequestIsMade() {
+    var adultTicketRequest = new TicketRequest(TicketType.ADULT, 1);
+    var inOrder = inOrder(paymentService, seatReservationService);
+
+    underTest.purchaseTickets(1L, adultTicketRequest);
+
+    inOrder.verify(paymentService).debitAccount(1L, new BigDecimal("25.99"));
+    inOrder.verify(seatReservationService).reserveSeats(1L, 1L);
+    inOrder.verifyNoMoreInteractions();
+  }
 }
