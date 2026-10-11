@@ -49,6 +49,25 @@ class TicketPriceServiceImplTest {
   }
 
   @Test
+  @Order(2)
+  void shouldIncludeDescriptiveMessageInException_whenPriceForAnUnknownTicketTypeIsRequested() {
+    try (var ticketTypeMockedStatic = mockStatic(TicketType.class)) {
+      var unknownTicketType = mock(TicketType.class);
+      doReturn(3).when(unknownTicketType).ordinal();
+      ticketTypeMockedStatic.when(TicketType::values)
+              .thenReturn(new TicketType[] {
+                      TicketType.ADULT,
+                      TicketType.CHILD,
+                      TicketType.INFANT,
+                      unknownTicketType });
+
+      assertThrows(InvalidPriceException.class, () -> underTest.getPrice(unknownTicketType));
+    } catch (InvalidPriceException e) {
+      assertEquals("cannot determine price for unknown ticket type", e.getMessage());
+    }
+  }
+
+  @Test
   @Order(3)
   void shouldIncludeDescriptiveMessageInException_whenThePriceOfANullTicketTypeIsRequested() {
     try {
