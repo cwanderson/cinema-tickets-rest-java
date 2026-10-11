@@ -477,4 +477,14 @@ class CinemaTicketsServiceImplTest {
 
     verify(ticketPriceService).getPrice(TicketType.CHILD);
   }
+
+  @Test
+  void shouldCallTicketPriceService_whenOneInfantTicketIsRequested() {
+    var adultTicketRequest = new TicketRequest(TicketType.ADULT, 1);
+    var infantTicketRequest = new TicketRequest(TicketType.INFANT, 1);
+
+    underTest.purchaseTickets(1L, adultTicketRequest, infantTicketRequest);
+
+    verify(ticketPriceService).getPrice(TicketType.INFANT);
+  }
 }
