@@ -53,6 +53,7 @@ class CinemaTicketsComponentTest {
   @Test
   void givenABookingIsMadeForOneAdultTicket_whenTheBookingIsRequested_thenTheBookingConfirmationIsReturned()
           throws Exception {
+    var expected = new BookingConfirmation(1L, 1L, new BigDecimal("25.99"));
     var adultTicketRequest = new TicketRequest(TicketType.ADULT, 1);
     var booking = new Booking(1L, adultTicketRequest);
 
@@ -66,9 +67,7 @@ class CinemaTicketsComponentTest {
 
     var contentAsString = response.getResponse().getContentAsString();
     var bookingConfirmation = objectMapper.readValue(contentAsString, BookingConfirmation.class);
-    assertEquals(1L, bookingConfirmation.accountId());
-    assertEquals(1L, bookingConfirmation.seatCount());
-    assertEquals(new BigDecimal("25.99"), bookingConfirmation.totalCost());
+    assertEquals(expected, bookingConfirmation);
   }
 
   @Test
