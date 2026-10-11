@@ -1,9 +1,11 @@
 package uk.gov.dwp.engineering.recruitment.thirdparty;
 
 import java.math.BigDecimal;
+import org.springframework.stereotype.Service;
 import uk.gov.dwp.engineering.recruitment.domain.TicketType;
 import uk.gov.dwp.engineering.recruitment.exception.InvalidPriceException;
 
+@Service
 public class TicketPriceServiceImpl implements TicketPriceService {
 
   private static final BigDecimal ADULT_TICKET_PRICE = new BigDecimal("25.99");

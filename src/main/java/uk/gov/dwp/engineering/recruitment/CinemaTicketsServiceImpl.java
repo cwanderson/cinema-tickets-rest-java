@@ -10,6 +10,7 @@ import uk.gov.dwp.engineering.recruitment.domain.TicketType;
 import uk.gov.dwp.engineering.recruitment.exception.InvalidBookingException;
 import uk.gov.dwp.engineering.recruitment.thirdparty.PaymentService;
 import uk.gov.dwp.engineering.recruitment.thirdparty.SeatReservationService;
+import uk.gov.dwp.engineering.recruitment.thirdparty.TicketPriceService;
 
 @Service
 public class CinemaTicketsServiceImpl implements CinemaTicketsService {
@@ -37,10 +38,14 @@ public class CinemaTicketsServiceImpl implements CinemaTicketsService {
 
   private final SeatReservationService seatReservationService;
 
+  private final TicketPriceService ticketPriceService;
+
   public CinemaTicketsServiceImpl(PaymentService paymentService,
-      SeatReservationService seatReservationService) {
+                                  SeatReservationService seatReservationService,
+                                  TicketPriceService ticketPriceService) {
     this.paymentService = paymentService;
     this.seatReservationService = seatReservationService;
+    this.ticketPriceService = ticketPriceService;
   }
 
   @Override
