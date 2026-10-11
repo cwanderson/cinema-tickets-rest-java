@@ -15,10 +15,10 @@ class RestExceptionHandlerTest {
   }
 
   @Test
-  void shouldReturnStatusOfNotImplemented_whenInvalidBookingExceptionIsHandled() {
-    var problemDetail = underTest.handleInvalidBookingException(new InvalidBookingException("Not implemented yet."));
+  void shouldReturnStatusOfBadRequest_whenInvalidBookingExceptionIsHandled() {
+    var problemDetail = underTest.handleInvalidBookingException(new InvalidBookingException(""));
 
-    assertEquals(501, problemDetail.getStatus());
+    assertEquals(400, problemDetail.getStatus());
   }
 
   @Test
