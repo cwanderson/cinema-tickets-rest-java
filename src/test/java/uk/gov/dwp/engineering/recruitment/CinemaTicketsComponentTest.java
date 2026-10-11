@@ -1,6 +1,8 @@
 package uk.gov.dwp.engineering.recruitment;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -68,6 +70,9 @@ class CinemaTicketsComponentTest {
     var contentAsString = response.getResponse().getContentAsString();
     var bookingConfirmation = objectMapper.readValue(contentAsString, BookingConfirmation.class);
     assertEquals(expected, bookingConfirmation);
+
+    verify(paymentService).debitAccount(1L, new BigDecimal("25.99"));
+    verify(seatReservationService).reserveSeats(1L, 1L);
   }
 
   @Test
@@ -89,6 +94,9 @@ class CinemaTicketsComponentTest {
     var contentAsString = response.getResponse().getContentAsString();
     var problemDetail = objectMapper.readValue(contentAsString, ProblemDetail.class);
     assertEquals(expected, problemDetail);
+
+    verifyNoInteractions(paymentService);
+    verifyNoInteractions(seatReservationService);
   }
 
   @Test
@@ -116,5 +124,8 @@ class CinemaTicketsComponentTest {
     var contentAsString = response.getResponse().getContentAsString();
     var problemDetail = objectMapper.readValue(contentAsString, ProblemDetail.class);
     assertEquals(expected, problemDetail);
+
+    verifyNoInteractions(paymentService);
+    verifyNoInteractions(seatReservationService);
   }
 }
